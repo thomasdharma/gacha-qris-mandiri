@@ -52,16 +52,16 @@
     .gift-container {
       margin-top: 30px;
       display: grid;
-      grid-template-columns: repeat(2, 200px);
-      grid-template-rows: repeat(2, 200px);
+      grid-template-columns: repeat(2, 250px);
+      grid-template-rows: repeat(2, 250px);
       gap: 30px;
       justify-content: center;
     }
 
     .gift-box {
-      width: 200px;
-      height: 200px;
-      font-size: 100px;
+      width: 250px;
+      height: 250px;
+      font-size: 120px;
       cursor: pointer;
       transition: transform 0.3s;
     }
@@ -112,15 +112,15 @@
 
     @media screen and (max-width: 480px) {
       .gift-container {
-        grid-template-columns: repeat(2, 150px);
-        grid-template-rows: repeat(2, 150px);
+        grid-template-columns: repeat(2, 180px);
+        grid-template-rows: repeat(2, 180px);
         gap: 20px;
       }
 
       .gift-box {
-        width: 150px;
-        height: 150px;
-        font-size: 80px;
+        width: 180px;
+        height: 180px;
+        font-size: 90px;
       }
 
       .popup {
@@ -146,9 +146,7 @@
     <div class="sub-info">Tukarkan 2 poin untuk 1x kesempatan</div>
   </div>
 
-  <div class="gift-container" id="gift-container">
-    <!-- Gift boxes will be rendered here -->
-  </div>
+  <div class="gift-container" id="gift-container"></div>
 
   <div class="popup" id="rewardPopup"></div>
 
