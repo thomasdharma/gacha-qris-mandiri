@@ -2,172 +2,135 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>M-Gacha Carnival</title>
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
       font-family: "Arial", sans-serif;
-      background: url("assets/background.png") no-repeat center center/cover;
-      text-align: center;
+      background: url("assets/background.png") no-repeat center center fixed;
+      background-size: cover;
       color: white;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
     }
 
-    #logo {
-      margin-top: 20px;
-      width: 150px;
-      height: auto;
-      object-fit: contain;
+    .logo {
+      width: 120px;
+      margin: 20px auto 10px;
     }
 
-    .menu {
-      margin-top: 10px;
+    .menu-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 10px;
     }
 
-    .menu button {
-      margin: 5px;
-      padding: 10px 20px;
+    .menu-buttons button {
+      padding: 10px 16px;
+      font-size: 14px;
+      border-radius: 12px;
       border: none;
-      border-radius: 15px;
-      font-weight: bold;
       cursor: pointer;
-      background-color: white;
-      color: black;
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+      font-weight: bold;
     }
 
     .info {
-      margin-top: 10px;
+      margin-top: 5px;
       font-size: 18px;
     }
 
-    #giftContainer {
+    .sub-info {
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .gift-container {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      justify-items: center;
-      margin: 30px auto;
-      max-width: 400px;
+      grid-template-columns: repeat(2, auto);
+      gap: 24px 32px;
+      justify-content: center;
+      margin-top: 10px;
+      flex-grow: 1;
     }
 
     .gift-box {
-      width: 120px;
-      height: 120px;
-      background: url("assets/gift-box.png") no-repeat center center/contain;
+      width: 90px;
+      height: 90px;
+      background: url("assets/gift-box.png") no-repeat center center;
+      background-size: contain;
       cursor: pointer;
     }
 
-    #rewardPopup {
+    .popup {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      z-index: 99;
-      color: white;
-    }
-
-    #rewardPopup div {
-      background: #222;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      color: black;
       padding: 20px;
-      border-radius: 10px;
-      font-size: 20px;
-      animation: pop 0.5s ease;
+      border-radius: 12px;
+      display: none;
+      z-index: 1000;
     }
 
-    #rewardPopup button {
+    .popup button {
       margin-top: 10px;
-      padding: 10px 20px;
+      padding: 8px 14px;
       font-weight: bold;
       border: none;
       border-radius: 8px;
-      background-color: #ffcc00;
-      color: black;
       cursor: pointer;
     }
 
-    @keyframes pop {
-      0% { transform: scale(0.7); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    #coinDisplay {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    #coinDisplay img {
-      width: 20px;
-      height: 20px;
-    }
-
-    .popup-menu {
+    .reward-history, .reward-list {
       display: none;
       position: fixed;
-      top: 80px;
-      right: 20px;
+      top: 70px;
+      right: 10px;
       background: white;
       color: black;
       padding: 15px;
-      border-radius: 10px;
+      border-radius: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 1000;
       text-align: left;
-      max-width: 300px;
-      z-index: 100;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+      font-size: 14px;
     }
 
-    .popup-menu h3 {
-      margin-top: 0;
-    }
-
-    .popup-menu ul {
-      padding-left: 20px;
-    }
-
-    .popup-menu li {
-      margin: 5px 0;
-    }
-
-    @media (max-width: 480px) {
-      #giftContainer {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-      }
-      .gift-box {
-        width: 100px;
-        height: 100px;
-      }
+    .reward-history ul, .reward-list ul {
+      padding-left: 18px;
     }
   </style>
 </head>
 <body>
+  <img src="assets/logo-mandiri.png" alt="Mandiri Logo" class="logo"/>
 
-  <img id="logo" src="assets/logo-mandiri.png" alt="Mandiri Logo" />
-
-  <div class="menu">
-    <button onclick="togglePopup('rewardList')">🎁 Daftar Hadiah</button>
-    <button onclick="togglePopup('rewardHistory')">📦 HadiahMu</button>
+  <div class="menu-buttons">
+    <button onclick="toggleRewardList()">🎁 Daftar Hadiah</button>
+    <button onclick="toggleHistory()">📦 HadiahMu</button>
   </div>
 
-  <div id="coinDisplay">
-    <img src="assets/coin.png" alt="coin" />
-    <span id="points">M-Gacha Poin: 10</span>
-  </div>
-  <div class="info" id="chanceInfo">Kesempatan Hari ini: 10x</div>
-  <div class="info">Tukarkan 2 poin untuk 1x kesempatan</div>
+  <div class="info">😊 M-Gacha Poin: <span id="points">10</span></div>
+  <div class="info">Kesempatan Hari ini: <span id="chances">10</span>x</div>
+  <div class="sub-info">Tukarkan 2 poin untuk 1x kesempatan</div>
 
-  <div id="giftContainer"></div>
+  <div class="gift-container" id="giftContainer"></div>
 
-  <div id="rewardPopup"></div>
+  <div class="popup" id="rewardPopup"></div>
 
-  <div id="rewardList" class="popup-menu">
-    <h3>🎁 Daftar Hadiah:</h3>
+  <div class="reward-list" id="rewardList">
+    <strong>🎁 Daftar Hadiah:</strong>
     <ul>
       <li>+3 M-Gacha Poin</li>
       <li>i-Voucher Indomaret Rp 50.000</li>
@@ -180,43 +143,81 @@
       <li>Honda Vario 125 CBS ISS</li>
       <li>Logam Mulia 1gr</li>
     </ul>
-    <button onclick="togglePopup('rewardList')">Tutup</button>
   </div>
 
-  <div id="rewardHistory" class="popup-menu">
-    <h3>📦 HadiahMu:</h3>
+  <div class="reward-history" id="rewardHistory">
+    <strong>📦 HadiahMu:</strong>
     <ul id="historyList"></ul>
-    <button onclick="togglePopup('rewardHistory')">Tutup</button>
   </div>
 
   <audio id="sound" src="assets/arcade-sound.mp3"></audio>
 
   <script>
-    let points = 10;
-    let chances = 10;
-    const sound = document.getElementById("sound");
-    const giftContainer = document.getElementById("giftContainer");
-    const rewardPopup = document.getElementById("rewardPopup");
-    const historyList = document.getElementById("historyList");
-    const history = [];
-
     const rewards = [
-      "+3 M-Gacha Poin", "+3 M-Gacha Poin", "+3 M-Gacha Poin", "+3 M-Gacha Poin", "+3 M-Gacha Poin",
-      "+3 M-Gacha Poin", "+3 M-Gacha Poin", "+3 M-Gacha Poin", "+3 M-Gacha Poin", "+3 M-Gacha Poin",
-      "+3 M-Gacha Poin", "+3 M-Gacha Poin", "i-Voucher Indomaret Rp 50.000",
-      "Voucher Alfamart Rp 50.000", "Voucher Grab Rp 50.000",
-      "i-Voucher Indomaret Rp 100.000", "Voucher Alfamart Rp 100.000",
-      "Samsung Smart TV 32\"", "Iphone 15 128GB", "Honda Vario 125 CBS ISS", "Logam Mulia 1gr"
+      ...Array(98).fill("+3 M-Gacha Poin"),
+      "i-Voucher Indomaret Rp 50.000",
+      "i-Voucher Indomaret Rp 100.000",
+      "Voucher Alfamart Rp 50.000",
+      "Voucher Alfamart Rp 100.000",
+      "Voucher Grab Rp 50.000",
+      "Iphone 15 128GB",
+      "Samsung Smart TV 32\"",
+      "Honda Vario 125 CBS ISS",
+      "Logam Mulia 1gr"
     ];
 
+    let points = 10;
+    let chances = 10;
+    let history = [];
+
+    const giftContainer = document.getElementById("giftContainer");
+    const pointsEl = document.getElementById("points");
+    const chancesEl = document.getElementById("chances");
+    const rewardPopup = document.getElementById("rewardPopup");
+    const historyList = document.getElementById("historyList");
+    const sound = document.getElementById("sound");
+
     function updateDisplay() {
-      document.getElementById("points").innerHTML = `M-Gacha Poin: ${points}`;
-      document.getElementById("chanceInfo").innerText = `Kesempatan Hari ini: ${chances}x`;
+      pointsEl.textContent = points;
+      chancesEl.textContent = chances;
     }
 
-    function togglePopup(id) {
-      const popup = document.getElementById(id);
-      popup.style.display = popup.style.display === "block" ? "none" : "block";
+    function toggleRewardList() {
+      const list = document.getElementById("rewardList");
+      list.style.display = list.style.display === "block" ? "none" : "block";
+    }
+
+    function toggleHistory() {
+      const h = document.getElementById("rewardHistory");
+      h.style.display = h.style.display === "block" ? "none" : "block";
+    }
+
+    function showRewardPopup(reward) {
+      rewardPopup.innerHTML = `🎉 Kamu mendapat: <b>${reward}</b><br/><button onclick="closeRewardPopup()">Main Lagi</button>`;
+      rewardPopup.style.display = "block";
+    }
+
+    function closeRewardPopup() {
+      rewardPopup.style.display = "none";
+    }
+
+    function sendToSheets(reward) {
+      const data = {
+        timestamp: new Date().toISOString(),
+        nama: "Demo Nasabah",
+        cif: "1234567890",
+        norek: "9000000001",
+        hp: "08123456789",
+        email: "demo@email.com",
+        reward: reward
+      };
+
+      fetch("https://script.google.com/macros/s/AKfycbwYHTbpOPV0P3qwu06kgDZA3hnNJABi16ofPkBn48kV9cmo_zV-ieSYtbCzBwkooA1P/exec", {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
     }
 
     function createGiftBox(index) {
@@ -229,57 +230,23 @@
         }
 
         sound.play();
-        points -= 2;
         chances--;
+        points -= 2;
 
         const reward = rewards[Math.floor(Math.random() * rewards.length)];
+
+        if (reward === "+3 M-Gacha Poin") points += 3;
+
         history.push(reward);
         updateDisplay();
-
         showRewardPopup(reward);
-        updateHistory();
+        sendToSheets(reward);
 
-        // SEND to Google Sheets (dummy)
-        const dummyData = {
-          timestamp: new Date().toLocaleString(),
-          nama: "Thomas Dharma",
-          cif: "123456789",
-          norek: "9000001234567",
-          hp: "081234567890",
-          email: "thomas@email.com",
-          reward: reward
-        };
-
-        fetch("https://script.google.com/macros/s/AKfycbwYHTbpOPV0P3qwu06kgDZA3hnNJABi16ofPkBn48kV9cmo_zV-ieSYtbCzBwkooA1P/exec", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(dummyData)
-        });
-        
-        if (reward.includes("+3")) points += 3;
-        updateDisplay();
+        const li = document.createElement("li");
+        li.textContent = reward;
+        historyList.appendChild(li);
       };
       return box;
-    }
-
-    function showRewardPopup(reward) {
-      rewardPopup.innerHTML = `
-        <div>🎉 Kamu mendapat:<br><b>${reward}</b><br><br>
-        <button onclick="closeRewardPopup()">Main Lagi</button></div>`;
-      rewardPopup.style.display = "flex";
-    }
-
-    function closeRewardPopup() {
-      rewardPopup.style.display = "none";
-    }
-
-    function updateHistory() {
-      historyList.innerHTML = "";
-      history.forEach(item => {
-        const li = document.createElement("li");
-        li.innerText = item;
-        historyList.appendChild(li);
-      });
     }
 
     function renderGifts() {
@@ -289,8 +256,8 @@
       }
     }
 
-    renderGifts();
     updateDisplay();
+    renderGifts();
   </script>
 </body>
 </html>
