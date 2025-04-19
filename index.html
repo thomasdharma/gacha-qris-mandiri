@@ -4,156 +4,132 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>M-Gacha Carnival</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial Rounded MT Bold', sans-serif;
+      background: url('./assets/background.png') no-repeat center center fixed;
+      background-size: cover;
+      overflow-x: hidden;
+    }
+    .logo {
+      width: 160px;
+      margin: 20px auto 10px;
+      display: block;
+    }
+    .banner {
+      width: 300px;
+      display: block;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      font-size: 24px;
+      color: white;
+      margin-top: 10px;
+    }
+    .spin-count {
+      text-align: center;
+      font-size: 14px;
+      color: white;
+      margin-bottom: 20px;
+    }
+    .box-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .box {
+      width: 80px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .box:hover {
+      transform: scale(1.1);
+    }
+    .mascot {
+      width: 130px;
+      position: absolute;
+      bottom: 20px;
+      left: 10px;
+    }
+    .carousel {
+      width: 120px;
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+    }
+    .footer {
+      text-align: center;
+      color: white;
+      font-size: 12px;
+      margin-top: 20px;
+    }
+    .gift-list {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: white;
+      color: #222;
+      font-size: 12px;
+      border-radius: 12px;
+      padding: 10px 15px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      max-width: 200px;
+    }
+    .gift-list-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    audio { display: none; }
+  </style>
 </head>
 <body>
-  <div class="background">
-    <img src="assets/background.png" alt="Background" class="background-img" />
-    <img src="assets/banner-asset.png" alt="Banner" class="banner" />
-    <img src="assets/logo-mandiri.png" alt="Mandiri Logo" class="logo" />
-    <img src="assets/mascot.png" alt="Mascot" class="mascot" />
-    <img src="assets/carousel-asset.png" alt="Carousel" class="carousel" />
+  <img src="./assets/logo-mandiri.png" alt="Mandiri Logo" class="logo" />
+  <img src="./assets/banner-asset.png" alt="Banner" class="banner" />
+  <h1>🎉 Pilih Hadiahmu Sekarang!</h1>
+  <p class="spin-count">Spin ke-2 dari 10</p>
+
+  <div class="box-container">
+    <img src="./assets/gift-box.png" class="box" onclick="spin(1)" />
+    <img src="./assets/gift-box.png" class="box" onclick="spin(2)" />
+    <img src="./assets/gift-box.png" class="box" onclick="spin(3)" />
+    <img src="./assets/gift-box.png" class="box" onclick="spin(4)" />
   </div>
 
-  <h1 class="title">🎉 Pilih Hadiahmu Sekarang!</h1>
-  <p class="counter">Spin ke-<span id="spin-count">0</span> dari 10</p>
-  <div class="boxes">
-    <img src="assets/gift-box.png" class="box" onclick="revealPrize(this)" />
-    <img src="assets/gift-box.png" class="box" onclick="revealPrize(this)" />
-    <img src="assets/gift-box.png" class="box" onclick="revealPrize(this)" />
-    <img src="assets/gift-box.png" class="box" onclick="revealPrize(this)" />
+  <img src="./assets/mascot.png" alt="Mascot" class="mascot" />
+  <img src="./assets/carousel-asset.png" alt="Carousel" class="carousel" />
+
+  <div class="gift-list">
+    <div class="gift-list-title">🏰 Daftar Hadiah:
+    </div>
+    <ul>
+      <li>+3 Poin</li>
+      <li>i-Voucher Indomaret Rp 50.000</li>
+      <li>i-Voucher Indomaret Rp 100.000</li>
+      <li>Voucher Alfamart Rp 50.000</li>
+      <li>Voucher Alfamart Rp 100.000</li>
+      <li>Voucher Grab Rp 50.000</li>
+      <li>Iphone 15 128GB</li>
+      <li>Samsung Smart TV 32"</li>
+      <li>Honda Vario 125 CBS ISS</li>
+      <li>Logam Mulia 1gr</li>
+    </ul>
   </div>
 
-  <button class="list-button" onclick="toggleList()">🎁 Daftar Hadiah</button>
-  <ul id="prize-list" class="hidden">
-    <li>+3 Poin M-Gacha</li>
-    <li>i-Voucher Indomaret Rp 50.000</li>
-    <li>i-Voucher Indomaret Rp 100.000</li>
-    <li>Voucher Alfamart Rp 50.000</li>
-    <li>Voucher Alfamart Rp 100.000</li>
-    <li>Voucher Grab Rp 50.000</li>
-    <li>Iphone 15 128GB</li>
-    <li>Samsung Smart Tv 32 Inch</li>
-    <li>Honda Vario 125 CBS ISS</li>
-    <li>Logam Mulia 1gr</li>
-  </ul>
+  <audio id="bg-sound" autoplay loop>
+    <source src="./assets/arcade-sound.mp3" type="audio/mpeg">
+  </audio>
 
-  <audio id="spin-sound" src="assets/arcade-sound.mp3"></audio>
-  <div id="confetti"></div>
-
-  <footer>© 2025 Bank Mandiri - M-Gacha Carnival UI</footer>
+  <div class="footer">
+    &copy; 2025 Bank Mandiri - M-Gacha Carnival UI
+  </div>
 
   <script>
-    const prizes = [
-      "+3 Poin M-Gacha",
-      "i-Voucher Indomaret Rp 50.000",
-      "i-Voucher Indomaret Rp 100.000",
-      "Voucher Alfamart Rp 50.000",
-      "Voucher Alfamart Rp 100.000",
-      "Voucher Grab Rp 50.000",
-      "Iphone 15 128GB",
-      "Samsung Smart Tv 32 Inch",
-      "Honda Vario 125 CBS ISS",
-      "Logam Mulia 1gr"
-    ];
-
-    let spin = 0;
-    function revealPrize(element) {
-      if (spin >= 10) return alert("Kamu sudah mencapai limit spin hari ini!");
-      const sound = document.getElementById("spin-sound");
-      sound.play();
-      const prize = prizes[Math.floor(Math.random() * prizes.length)];
-      element.outerHTML = `<div class='box-result'>${prize}</div>`;
-      spin++;
-      document.getElementById("spin-count").innerText = spin;
-      document.getElementById("confetti").classList.add("show-confetti");
-      setTimeout(() => {
-        document.getElementById("confetti").classList.remove("show-confetti");
-      }, 2000);
-    }
-
-    function toggleList() {
-      document.getElementById("prize-list").classList.toggle("hidden");
-    }
-  </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>M-Gacha Carnival</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div class="background">
-    <img src="assets/background.png" alt="Background" class="background-img" />
-    <img src="assets/banner-asset.png" alt="Banner" class="banner" />
-    <img src="assets/logo-mandiri.png" alt="Mandiri Logo" class="logo" />
-    <img src="assets/mascot.png" alt="Mascot" class="mascot" />
-    <img src="assets/carousel-asset.png" alt="Carousel" class="carousel" />
-  </div>
-
-  <h1 class="title">🎉 Pilih Hadiahmu Sekarang!</h1>
-  <p class="counter">Spin ke-<span id="spin-count">0</span> dari 10</p>
-  <div class="boxes">
-    <img src="assets/gift-box.png" class="box" onclick="revealPrize(this)" />
-    <img src="assets/gift-box.png" class="box" onclick="revealPrize(this)" />
-    <img src="assets/gift-box.png" class="box" onclick="revealPrize(this)" />
-    <img src="assets/gift-box.png" class="box" onclick="revealPrize(this)" />
-  </div>
-
-  <button class="list-button" onclick="toggleList()">🎁 Daftar Hadiah</button>
-  <ul id="prize-list" class="hidden">
-    <li>+3 Poin M-Gacha</li>
-    <li>i-Voucher Indomaret Rp 50.000</li>
-    <li>i-Voucher Indomaret Rp 100.000</li>
-    <li>Voucher Alfamart Rp 50.000</li>
-    <li>Voucher Alfamart Rp 100.000</li>
-    <li>Voucher Grab Rp 50.000</li>
-    <li>Iphone 15 128GB</li>
-    <li>Samsung Smart Tv 32 Inch</li>
-    <li>Honda Vario 125 CBS ISS</li>
-    <li>Logam Mulia 1gr</li>
-  </ul>
-
-  <audio id="spin-sound" src="assets/arcade-sound.mp3"></audio>
-  <div id="confetti"></div>
-
-  <footer>© 2025 Bank Mandiri - M-Gacha Carnival UI</footer>
-
-  <script>
-    const prizes = [
-      "+3 Poin M-Gacha",
-      "i-Voucher Indomaret Rp 50.000",
-      "i-Voucher Indomaret Rp 100.000",
-      "Voucher Alfamart Rp 50.000",
-      "Voucher Alfamart Rp 100.000",
-      "Voucher Grab Rp 50.000",
-      "Iphone 15 128GB",
-      "Samsung Smart Tv 32 Inch",
-      "Honda Vario 125 CBS ISS",
-      "Logam Mulia 1gr"
-    ];
-
-    let spin = 0;
-    function revealPrize(element) {
-      if (spin >= 10) return alert("Kamu sudah mencapai limit spin hari ini!");
-      const sound = document.getElementById("spin-sound");
-      sound.play();
-      const prize = prizes[Math.floor(Math.random() * prizes.length)];
-      element.outerHTML = `<div class='box-result'>${prize}</div>`;
-      spin++;
-      document.getElementById("spin-count").innerText = spin;
-      document.getElementById("confetti").classList.add("show-confetti");
-      setTimeout(() => {
-        document.getElementById("confetti").classList.remove("show-confetti");
-      }, 2000);
-    }
-
-    function toggleList() {
-      document.getElementById("prize-list").classList.toggle("hidden");
+    function spin(index) {
+      alert("Kamu mendapatkan hadiah! (Simulasi Box " + index + ")");
     }
   </script>
 </body>
