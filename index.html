@@ -67,7 +67,7 @@
       align-items: center;
       justify-content: center;
       border-radius: 20px;
-      position: relative;
+      box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.6);
       animation: glow 2s ease-in-out infinite alternate;
       transition: transform 0.2s;
     }
@@ -76,19 +76,8 @@
       animation: shake 0.5s infinite;
     }
 
-    .gift-box::before {
-      content: '';
-      position: absolute;
-      top: -6px;
-      left: -6px;
-      right: -6px;
-      bottom: -6px;
-      border-radius: 26px;
-      background: conic-gradient(
-        red, orange, yellow, green, cyan, blue, violet, red
-      );
-      z-index: -1;
-      animation: carnivalLights 1s linear infinite;
+    .gift-box:active {
+      animation: bounce 0.3s ease;
     }
 
     .gift-box span {
@@ -110,9 +99,10 @@
       100% { transform: translate(-1px, 2px) rotate(-1deg); }
     }
 
-    @keyframes carnivalLights {
-      0% { filter: hue-rotate(0deg); }
-      100% { filter: hue-rotate(360deg); }
+    @keyframes bounce {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
 
     .popup {
@@ -169,6 +159,10 @@
       z-index: 998;
     }
 
+    audio#themeMusic {
+      display: none;
+    }
+
     @media screen and (max-width: 480px) {
       body {
         padding: 10px;
@@ -194,9 +188,13 @@
     }
   </style>
 </head>
-<body>
+<body onload="document.getElementById('themeMusic').play()">
 <canvas id="confetti-canvas"></canvas>
 <img src="assets/logo-mandiri.png" alt="Mandiri Logo" class="logo" />
+
+<audio id="themeMusic" autoplay loop>
+  <source src="assets/theme.mp3" type="audio/mp3">
+</audio>
 
 <div class="menu">
   <button onclick="showGiftList()">🎁 Daftar Hadiah</button>
@@ -212,138 +210,129 @@
 </div>
 
 <div class="gift-container" id="gift-container"></div>
-
 <div class="popup" id="rewardPopup"></div>
+
 <audio id="popSound" src="assets/pop.mp3"></audio>
 <audio id="rewardSound" src="assets/big-reward.mp3"></audio>
 <script>
-  let points = 10;
-  let chances = 10;
+let points = 10;
+let chances = 10;
 
-  const rewards = [
-    { label: "+3 M-Gacha Poin", chance: 99.8 },
-    { label: "i-Voucher Indomaret Rp 50.000", chance: 0.06 },
-    { label: "Voucher Alfamart Rp 50.000", chance: 0.05 },
-    { label: "Voucher Grab Rp 50.000", chance: 0.03 },
-    { label: "i-Voucher Indomaret Rp 100.000", chance: 0.02 },
-    { label: "Voucher Alfamart Rp 100.000", chance: 0.015 },
-    { label: "Samsung Smart TV 32\"", chance: 0.005 },
-    { label: "iPhone 15 128GB", chance: 0.004 },
-    { label: "Honda Vario 125 CBS ISS", chance: 0.003 },
-    { label: "Logam Mulia 1gr", chance: 0.002 }
-  ];
+const rewards = [
+  { label: "+3 M-Gacha Poin", chance: 99.8 },
+  { label: "i-Voucher Indomaret Rp 50.000", chance: 0.06 },
+  { label: "Voucher Alfamart Rp 50.000", chance: 0.05 },
+  { label: "Voucher Grab Rp 50.000", chance: 0.03 },
+  { label: "i-Voucher Indomaret Rp 100.000", chance: 0.02 },
+  { label: "Voucher Alfamart Rp 100.000", chance: 0.015 },
+  { label: "Samsung Smart TV 32\"", chance: 0.005 },
+  { label: "iPhone 15 128GB", chance: 0.004 },
+  { label: "Honda Vario 125 CBS ISS", chance: 0.003 },
+  { label: "Logam Mulia 1gr", chance: 0.002 }
+];
 
-  const rewardPopup = document.getElementById("rewardPopup");
-  const history = [];
-  const popSound = document.getElementById("popSound");
-  const rewardSound = document.getElementById("rewardSound");
+const rewardPopup = document.getElementById("rewardPopup");
+const history = [];
+const popSound = document.getElementById("popSound");
+const rewardSound = document.getElementById("rewardSound");
 
-  function updateDisplay() {
-    document.getElementById("points").textContent = points;
-    document.getElementById("chances").textContent = `Kesempatan Hari ini: ${chances}x`;
+function updateDisplay() {
+  document.getElementById("points").textContent = points;
+  document.getElementById("chances").textContent = `Kesempatan Hari ini: ${chances}x`;
+}
+
+function pickReward() {
+  let rand = Math.random() * 100;
+  let sum = 0;
+  for (let i = 0; i < rewards.length; i++) {
+    sum += rewards[i].chance;
+    if (rand <= sum) return rewards[i].label;
   }
+  return rewards[0].label;
+}
 
-  function pickReward() {
-    let rand = Math.random() * 100;
-    let sum = 0;
-    for (let i = 0; i < rewards.length; i++) {
-      sum += rewards[i].chance;
-      if (rand <= sum) return rewards[i].label;
+function sendToGoogleSheets(reward) {
+  fetch('https://script.google.com/macros/s/AKfycbwYHTbpOPV0P3qwu06kgDZA3hnNJABi16ofPkBn48kV9cmo_zV-ieSYtbCzBwkooA1P/exec', {
+    method: 'POST',
+    body: JSON.stringify({
+      timestamp: new Date().toISOString(),
+      nama: "Demo User",
+      cif: "1234567890",
+      norek: "9876543210",
+      hp: "081234567890",
+      email: "demo@example.com",
+      reward: reward
+    }),
+    headers: {
+      'Content-Type': 'application/json'
     }
-    return rewards[0].label;
+  });
+}
+
+function openBox(index) {
+  if (points < 2 || chances <= 0) {
+    showRewardPopup("Kamu kehabisan kesempatan atau poin.", false);
+    return;
   }
 
-  function sendToGoogleSheets(reward) {
-    fetch('https://script.google.com/macros/s/AKfycbwYHTbpOPV0P3qwu06kgDZA3hnNJABi16ofPkBn48kV9cmo_zV-ieSYtbCzBwkooA1P/exec', {
-      method: 'POST',
-      body: JSON.stringify({
-        timestamp: new Date().toISOString(),
-        nama: "Demo User",
-        cif: "1234567890",
-        norek: "9876543210",
-        hp: "081234567890",
-        email: "demo@example.com",
-        reward: reward
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-  }
+  points -= 2;
+  chances--;
+  popSound.play();
 
-  function openBox(index) {
-    if (points < 2 || chances <= 0) {
-      showRewardPopup("Kamu kehabisan kesempatan atau poin.", false);
-      return;
-    }
+  const reward = pickReward();
+  if (reward.includes('+3')) points += 3;
 
-    points -= 2;
-    chances--;
-    popSound.play();
-
-    const reward = pickReward();
-    if (reward.includes('+3')) points += 3;
-
-    history.push(reward);
-    updateDisplay();
-    showRewardPopup(reward, true);
-    sendToGoogleSheets(reward);
-
-    if (!reward.includes('+3')) {
-      setTimeout(() => rewardSound.play(), 300);
-    }
-  }
-
-  function showRewardPopup(message, isReward = true) {
-    rewardPopup.innerHTML = `
-      <div style="font-size: 24px;">
-        ${isReward ? '🎉 Kamu mendapat:<br><span style="font-size:32px;">' + message + '</span>' : message}
-      </div>
-      <button onclick="closeRewardPopup()">Main Lagi</button>
-    `;
-    rewardPopup.style.display = "block";
-
-    if (isReward) startConfetti();
-  }
-
-  function closeRewardPopup() {
-    rewardPopup.style.display = "none";
-    stopConfetti();
-  }
-
-  function showGiftList() {
-    alert(`🎁 Daftar Hadiah:\n\n${rewards.map(r => r.label).join('\n')}`);
-  }
-
-  function showHistory() {
-    alert(`📦 Riwayat HadiahMu:\n\n${history.join('\n') || "Belum ada hadiah yang diperoleh."}`);
-  }
-
-  function createGiftBox(index) {
-    const box = document.createElement("div");
-    box.className = "gift-box";
-
-    const icon = document.createElement("span");
-    icon.textContent = "🎁";
-    icon.onclick = () => openBox(index);
-
-    box.appendChild(icon);
-    return box;
-  }
-
-  function renderGifts() {
-    const giftContainer = document.getElementById("gift-container");
-    giftContainer.innerHTML = "";
-    for (let i = 0; i < 4; i++) {
-      giftContainer.appendChild(createGiftBox(i));
-    }
-  }
-
-  renderGifts();
+  history.push(reward);
   updateDisplay();
-</script>
+  showRewardPopup(reward, true);
+  sendToGoogleSheets(reward);
+
+  if (!reward.includes('+3')) {
+    setTimeout(() => rewardSound.play(), 300);
+  }
+}
+
+function showRewardPopup(message, isReward = true) {
+  rewardPopup.innerHTML = `
+    <div style="font-size: 24px;">
+      ${isReward ? '🎉 Kamu mendapat:<br><span style="font-size:32px;">' + message + '</span>' : message}
+    </div>
+    <button onclick="closeRewardPopup()">Main Lagi</button>
+  `;
+  rewardPopup.style.display = "block";
+  if (isReward) startConfetti();
+}
+
+function closeRewardPopup() {
+  rewardPopup.style.display = "none";
+  stopConfetti();
+}
+
+function showGiftList() {
+  alert(`🎁 Daftar Hadiah:\n\n${rewards.map(r => r.label).join('\n')}`);
+}
+
+function showHistory() {
+  alert(`📦 Riwayat HadiahMu:\n\n${history.join('\n') || "Belum ada hadiah yang diperoleh."}`);
+}
+
+function createGiftBox(index) {
+  const box = document.createElement("div");
+  box.className = "gift-box";
+
+  const icon = document.createElement("span");
+  icon.textContent = "🎁";
+  icon.onclick = () => openBox(index);
+
+  box.appendChild(icon);
+  return box;
+}
+
+function renderGifts() {
+  const giftContainer = document.getElementById("gift-container");
+  gift
 <script>
-// 🎊 Confetti Engine JS
+// 🎊 Confetti Engine
 const canvas = document.getElementById("confetti-canvas");
 const ctx = canvas.getContext("2d");
 let confetti = [];
