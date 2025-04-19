@@ -50,18 +50,18 @@
     }
 
     .gift-container {
-      margin-top: 20px;
+      margin-top: 30px;
       display: grid;
-      grid-template-columns: repeat(2, 100px);
-      grid-template-rows: repeat(2, 100px);
+      grid-template-columns: repeat(2, 150px);
+      grid-template-rows: repeat(2, 150px);
       gap: 30px;
       justify-content: center;
     }
 
     .gift-box {
-      width: 100px;
-      height: 100px;
-      font-size: 50px;
+      width: 150px;
+      height: 150px;
+      font-size: 80px;
       cursor: pointer;
       transition: transform 0.3s;
     }
@@ -111,10 +111,16 @@
     }
 
     @media screen and (max-width: 480px) {
+      .gift-container {
+        grid-template-columns: repeat(2, 120px);
+        grid-template-rows: repeat(2, 120px);
+        gap: 20px;
+      }
+
       .gift-box {
-        width: 90px;
-        height: 90px;
-        font-size: 40px;
+        width: 120px;
+        height: 120px;
+        font-size: 60px;
       }
 
       .popup {
