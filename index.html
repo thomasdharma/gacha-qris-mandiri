@@ -52,22 +52,22 @@
     .gift-container {
       margin-top: 30px;
       display: grid;
-      grid-template-columns: repeat(2, 150px);
-      grid-template-rows: repeat(2, 150px);
+      grid-template-columns: repeat(2, 200px);
+      grid-template-rows: repeat(2, 200px);
       gap: 30px;
       justify-content: center;
     }
 
     .gift-box {
-      width: 150px;
-      height: 150px;
-      font-size: 80px;
+      width: 200px;
+      height: 200px;
+      font-size: 100px;
       cursor: pointer;
       transition: transform 0.3s;
     }
 
     .gift-box:hover {
-      transform: scale(1.1);
+      transform: scale(1.05);
     }
 
     .popup {
@@ -112,15 +112,15 @@
 
     @media screen and (max-width: 480px) {
       .gift-container {
-        grid-template-columns: repeat(2, 120px);
-        grid-template-rows: repeat(2, 120px);
+        grid-template-columns: repeat(2, 150px);
+        grid-template-rows: repeat(2, 150px);
         gap: 20px;
       }
 
       .gift-box {
-        width: 120px;
-        height: 120px;
-        font-size: 60px;
+        width: 150px;
+        height: 150px;
+        font-size: 80px;
       }
 
       .popup {
