@@ -1,77 +1,158 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>M-Gacha Carnival</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pilih Hadiahmu Sekarang!</title>
+  <link rel="preload" href="assets/arcade-sound.mp3" as="audio">
   <style>
     body {
       margin: 0;
       padding: 0;
-      background: url('./assets/background.png') no-repeat center center fixed;
+      background: url('assets/background.png') no-repeat center center fixed;
       background-size: cover;
-      font-family: Arial, sans-serif;
-    }
-    .banner {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-    }
-    .banner img {
-      width: 80%;
-      max-width: 800px;
-    }
-    .content {
+      font-family: 'Arial', sans-serif;
       text-align: center;
-      margin-top: 2rem;
+      color: #fff;
     }
-    .gift-boxes {
+    header img {
+      width: 150px;
+      margin-top: 20px;
+    }
+    .title {
+      font-size: 2em;
+      margin-top: 10px;
+    }
+    .subtitle {
+      margin: 5px 0 20px;
+    }
+    .box-container {
       display: flex;
       justify-content: center;
-      gap: 1rem;
-      margin: 2rem 0;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
     }
-    .gift-boxes img {
+    .box {
       width: 100px;
+      height: 100px;
+      background: url('assets/gift-box.png') no-repeat center;
+      background-size: contain;
       cursor: pointer;
+      transition: transform 0.3s ease;
     }
-    .carousel {
+    .box:hover {
+      transform: scale(1.1);
+    }
+    .confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+    }
+    .prize {
+      font-size: 1.2em;
+      margin-top: 10px;
+    }
+    .menu-button {
       position: absolute;
-      bottom: 10px;
-      right: 10px;
-      width: 100px;
+      top: 20px;
+      right: 20px;
+      background: #fff;
+      color: #000;
+      border-radius: 20px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: bold;
     }
-    .mascot {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      width: 100px;
-    }
-    audio {
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
       display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    .modal-content {
+      background: white;
+      color: black;
+      padding: 30px;
+      border-radius: 10px;
+      width: 300px;
+      max-width: 90%;
+    }
+    .close-btn {
+      margin-top: 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div class="banner"><img src="./assets/banner-asset.png" alt="Banner" /></div>
-  <div class="content">
-    <h1>Pilih Hadiahmu Sekarang!</h1>
-    <div class="gift-boxes">
-      <img src="./assets/gift-box.png" onclick="playSound()" />
-      <img src="./assets/gift-box.png" onclick="playSound()" />
-      <img src="./assets/gift-box.png" onclick="playSound()" />
-      <img src="./assets/gift-box.png" onclick="playSound()" />
+  <audio id="sound" src="assets/arcade-sound.mp3"></audio>
+  <img src="assets/logo-mandiri.png" alt="Mandiri Logo">
+  <div class="title">🎉 Pilih Hadiahmu Sekarang!</div>
+  <div class="subtitle">Spin ke-<span id="spinCount">0</span> dari 10</div>
+  <div class="box-container">
+    <div class="box" onclick="openBox(this)"></div>
+    <div class="box" onclick="openBox(this)"></div>
+    <div class="box" onclick="openBox(this)"></div>
+    <div class="box" onclick="openBox(this)"></div>
+  </div>
+  <div class="confetti" id="confetti"></div>
+  <div class="menu-button" onclick="showModal()">🎁 Daftar Hadiah</div>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <h3>Daftar Hadiah</h3>
+      <ul>
+        <li>+3 Poin M-Gacha</li>
+        <li>Voucher Belanja</li>
+        <li>Smartphone</li>
+        <li>Logam Mulia</li>
+      </ul>
+      <button class="close-btn" onclick="hideModal()">Tutup</button>
     </div>
   </div>
-  <img class="carousel" src="./assets/carousel-asset.png" />
-  <img class="mascot" src="./assets/mascot.png" />
-  <audio id="spinSound" src="./assets/arcade-sound.mp3"></audio>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script>
-    function playSound() {
-      const sound = document.getElementById("spinSound");
-      sound.currentTime = 0;
-      sound.play();
+    let spinCount = 0;
+    function openBox(el) {
+      if (spinCount >= 10) {
+        alert("Kamu sudah mencapai batas spin hari ini.");
+        return;
+      }
+      spinCount++;
+      document.getElementById("spinCount").textContent = spinCount;
+      document.getElementById("sound").play();
+
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+
+      el.style.backgroundImage = "url('assets/gift-box.png')";
+      alert("🎉 Selamat! Kamu mendapatkan hadiah!");
+    }
+
+    function showModal() {
+      document.getElementById("modal").style.display = "flex";
+    }
+    function hideModal() {
+      document.getElementById("modal").style.display = "none";
     }
   </script>
 </body>
