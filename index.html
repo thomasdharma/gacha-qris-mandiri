@@ -211,7 +211,7 @@
 
     function openBox(index) {
       if (points < 2 || chances <= 0) {
-        alert("Kamu kehabisan kesempatan atau poin.");
+        showRewardPopup("Kamu kehabisan kesempatan atau poin.", false);
         return;
       }
       points -= 2;
@@ -222,13 +222,15 @@
 
       history.push(reward);
       updateDisplay();
-      showRewardPopup(reward);
+      showRewardPopup(reward, true);
       sendToGoogleSheets(reward);
     }
 
-    function showRewardPopup(reward) {
+    function showRewardPopup(message, isReward = true) {
       rewardPopup.innerHTML = `
-        <div>🎉 Kamu mendapat:<br><span style="font-size:32px;">${reward}</span></div>
+        <div style="font-size: 24px;">
+          ${isReward ? '🎉 Kamu mendapat:<br><span style="font-size:32px;">' + message + '</span>' : message}
+        </div>
         <button onclick="closeRewardPopup()">Main Lagi</button>
       `;
       rewardPopup.style.display = "block";
