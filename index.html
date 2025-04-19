@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>M-Gacha Carnival</title>
-  <link rel="preload" href="assets/arcade-sound.mp3" as="audio">
   <style>
     body {
       margin: 0;
@@ -27,6 +26,12 @@
       font-size: 20px;
       margin: 10px 0;
     }
+    .info-bar small {
+      display: block;
+      font-size: 14px;
+      margin-top: 4px;
+      color: #ddd;
+    }
     .coin {
       width: 20px;
       vertical-align: middle;
@@ -47,49 +52,50 @@
       cursor: pointer;
       position: relative;
     }
-    .reward-text {
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      color: white;
-      font-weight: bold;
-      font-size: 16px;
-      margin-top: 10px;
-      animation: fadeUp 2s ease-in-out;
-    }
-    @keyframes fadeUp {
-      0% {
-        opacity: 0;
-        transform: translate(-50%, 20px);
-      }
-      50% {
-        opacity: 1;
-        transform: translate(-50%, -10px);
-      }
-      100% {
-        opacity: 0;
-        transform: translate(-50%, -30px);
-      }
-    }
-    .popup {
+    .reward-popup {
       position: fixed;
-      top: 20px;
-      right: 20px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
       background: white;
-      padding: 10px 16px;
-      border-radius: 10px;
-      font-weight: bold;
-      font-size: 16px;
-      z-index: 10;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      z-index: 100;
       display: none;
+      animation: popup 0.3s ease forwards;
     }
-    .popup.show {
-      display: block;
+    .reward-popup h2 {
+      margin: 0 0 15px;
+      color: #333;
     }
-    .popup::before {
-      content: '🎁 ';
+    .reward-popup button {
+      margin-top: 15px;
+      background: #fcb800;
+      border: none;
+      padding: 10px 20px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    @keyframes popup {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.7);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 99;
+      display: none;
     }
   </style>
 </head>
@@ -101,22 +107,30 @@
   <div class="info-bar">
     <span><img src="assets/coin.png" class="coin"> <b>M-Gacha Poin:</b> <span id="point">10</span></span><br>
     <span><b>Kesempatan Hari ini:</b> <span id="chance">10</span>x</span>
+    <small>🎫 Tukarkan 2 poin untuk 1x kesempatan</small>
   </div>
 
   <div class="gift-container" id="giftContainer">
-    <!-- 5 Gift Boxes -->
+    <!-- Gift Boxes -->
   </div>
 
-  <div class="popup" id="popup"></div>
+  <!-- Custom Reward Popup -->
+  <div class="overlay" id="overlay"></div>
+  <div class="reward-popup" id="rewardPopup">
+    <h2 id="rewardText">🎁 Kamu mendapatkan...</h2>
+    <button onclick="closePopup()">Main Lagi</button>
+  </div>
 
   <audio id="spinSound" src="assets/arcade-sound.mp3" preload="auto"></audio>
 
   <script>
     const giftContainer = document.getElementById('giftContainer');
-    const popup = document.getElementById('popup');
     const pointEl = document.getElementById('point');
     const chanceEl = document.getElementById('chance');
     const spinSound = document.getElementById('spinSound');
+    const rewardPopup = document.getElementById('rewardPopup');
+    const rewardText = document.getElementById('rewardText');
+    const overlay = document.getElementById('overlay');
 
     let points = 10;
     let chances = 10;
@@ -140,6 +154,17 @@
       chanceEl.innerText = chances;
     }
 
+    function showPopup(reward) {
+      rewardText.innerText = `🎁 Kamu mendapatkan:\n${reward}`;
+      rewardPopup.style.display = 'block';
+      overlay.style.display = 'block';
+    }
+
+    function closePopup() {
+      rewardPopup.style.display = 'none';
+      overlay.style.display = 'none';
+    }
+
     function createGiftBox(index) {
       const box = document.createElement('div');
       box.className = 'gift-box';
@@ -147,31 +172,19 @@
 
       box.addEventListener('click', () => {
         if (points < 2 || chances <= 0) return;
-        
+
         points -= 2;
         chances -= 1;
         updateInfo();
+
         spinSound.currentTime = 0;
         spinSound.play();
 
-        // clear any previous reward texts
-        document.querySelectorAll('.reward-text').forEach(el => el.remove());
-
-        // animate
-        box.classList.add('open');
-
         const reward = getRandomReward();
-
         if (reward === '+3 M-Gacha Poin') points += 3;
+        updateInfo();
 
-        const rewardText = document.createElement('div');
-        rewardText.className = 'reward-text';
-        rewardText.innerText = reward;
-        box.appendChild(rewardText);
-
-        setTimeout(() => {
-          rewardText.remove();
-        }, 2500);
+        showPopup(reward);
       });
 
       return box;
