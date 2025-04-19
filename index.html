@@ -99,7 +99,7 @@
     }
   </style>
 </head>
-<body>
+  <body>
   <div class="top-bar">
     <img src="assets/logo-mandiri.png" class="logo" alt="Mandiri Logo">
   </div>
@@ -203,5 +203,55 @@
 
     renderGifts();
   </script>
+    const rewardHistory = [];
+
+function togglePopup(type) {
+  const popup = document.getElementById(`popup-${type}`);
+  const display = popup.style.display === "block" ? "none" : "block";
+  popup.style.display = display;
+  overlay.style.display = display;
+  if (type === 'riwayat') {
+    const list = document.getElementById('riwayat-list');
+    list.innerHTML = rewardHistory.length === 0 ? '<li><i>Belum ada hadiah</i></li>' :
+      rewardHistory.map(h => `<li>${h}</li>`).join('');
+  }
+}
+
+function showPopup(reward) {
+  rewardText.innerText = `🎁 Kamu mendapatkan:\n${reward}`;
+  rewardPopup.style.display = 'block';
+  overlay.style.display = 'block';
+  rewardHistory.push(reward);
+}
+    <!-- Menu Tombol Pop-up -->
+<div class="menu-buttons" style="position: fixed; top: 20px; right: 20px; z-index: 100;">
+  <button onclick="togglePopup('daftar')" style="margin:5px;">📜 Daftar Hadiah</button>
+  <button onclick="togglePopup('riwayat')" style="margin:5px;">🎁 HadiahMu</button>
+</div>
+
+<!-- Pop-up Daftar Hadiah -->
+<div class="reward-popup" id="popup-daftar" style="display:none;">
+  <h2>📜 Daftar Hadiah</h2>
+  <ul style="text-align:left;">
+    <li>+3 M-Gacha Poin</li>
+    <li>i-Voucher Indomaret Rp 50.000</li>
+    <li>i-Voucher Indomaret Rp 100.000</li>
+    <li>Voucher Alfamart Rp 50.000</li>
+    <li>Voucher Alfamart Rp 100.000</li>
+    <li>Voucher Grab Rp 50.000</li>
+    <li>Iphone 15 128GB</li>
+    <li>Samsung Smart TV 32”</li>
+    <li>Honda Vario 125 CBS ISS</li>
+    <li>Logam Mulia 1gr</li>
+  </ul>
+  <button onclick="togglePopup('daftar')">Tutup</button>
+</div>
+
+<!-- Pop-up Riwayat HadiahMu -->
+<div class="reward-popup" id="popup-riwayat" style="display:none;">
+  <h2>🎁 HadiahMu</h2>
+  <ul id="riwayat-list" style="text-align:left;"></ul>
+  <button onclick="togglePopup('riwayat')">Tutup</button>
+</div>
 </body>
 </html>
