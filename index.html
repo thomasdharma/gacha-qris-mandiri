@@ -2,177 +2,126 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>M-Gacha Carnival UI</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>M-Gacha Carnival</title>
+  <link rel="icon" href="assets/logo-mandiri.png" />
   <style>
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
     }
+
     body {
-      background: url('assets/background.png') no-repeat center center fixed;
+      font-family: 'Arial', sans-serif;
+      background-image: url('assets/background.png');
       background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 100vh;
       color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      overflow-x: hidden;
     }
-    header img {
-      width: 150px;
-      margin: 1rem auto 0;
+
+    .logo {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 120px;
     }
-    .banner {
-      margin: 0.5rem auto 1rem;
-      height: 60px;
-    }
+
     h1 {
-      font-size: 1.8rem;
-      margin-bottom: 0.25rem;
-    }
-    .subtitle {
-      font-size: 0.9rem;
-      margin-bottom: 1.2rem;
-    }
-    .spin-count {
-      margin-bottom: 1.2rem;
-      font-size: 1rem;
-    }
-    .points-display {
-      margin-bottom: 0.8rem;
+      margin-top: 60px;
+      font-size: 28px;
       font-weight: bold;
-      font-size: 1rem;
+      text-shadow: 1px 1px 3px #000;
     }
-    .box-container {
+
+    .gift-boxes {
+      margin-top: 20px;
       display: flex;
       justify-content: center;
-      gap: 1.2rem;
-      margin-bottom: 1.5rem;
+      gap: 20px;
     }
-    .box-container img {
-      width: 80px;
+
+    .gift-box {
+      width: 90px;
+      height: 90px;
+      background: orange;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
       cursor: pointer;
-      transition: transform 0.3s ease;
+      transition: transform 0.2s;
     }
-    .box-container img:hover {
+
+    .gift-box:hover {
       transform: scale(1.1);
     }
-    .floating-asset {
+
+    .counter {
+      margin-top: 12px;
+      font-weight: bold;
+      font-size: 14px;
+      background-color: rgba(0,0,0,0.4);
+      padding: 6px 12px;
+      border-radius: 8px;
+    }
+
+    .popup {
       position: fixed;
-      width: 100px;
-    }
-    .floating-left {
-      bottom: 1.5rem;
-      left: 1rem;
-    }
-    .floating-right {
-      bottom: 1.5rem;
-      right: 1rem;
-    }
-    .prize-display {
-      background: rgba(255, 255, 255, 0.9);
-      color: #222;
-      padding: 1rem 1.2rem;
-      border-radius: 1rem;
-      box-shadow: 0 0 10px #0005;
-      position: fixed;
-      top: 30%;
+      top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      z-index: 999;
-      display: none;
-    }
-    .prize-display h2 {
-      margin-bottom: 0.6rem;
-    }
-    .prize-display button {
-      margin-top: 0.6rem;
-      padding: 0.5rem 1rem;
-      background: #fdb813;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    footer {
-      font-size: 0.8rem;
-      margin-top: 1rem;
-      padding-bottom: 1rem;
-    }
-    .menu-button {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      padding: 0.5rem 1rem;
-      background: #fff;
-      color: #222;
+      background: white;
+      color: black;
+      padding: 20px 30px;
       border-radius: 12px;
-      font-size: 0.8rem;
-      cursor: pointer;
-    }
-    .gift-list {
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      z-index: 99;
       display: none;
-      position: fixed;
-      right: 1rem;
-      top: 3.2rem;
-      background: #fff;
-      color: #000;
-      padding: 1rem;
-      border-radius: 1rem;
-      font-size: 0.8rem;
-      box-shadow: 0 0 12px #0005;
-      text-align: left;
+    }
+
+    .popup.show {
+      display: block;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 10px;
+      font-size: 12px;
+      opacity: 0.6;
     }
   </style>
 </head>
 <body>
-  <header>
-    <img src="assets/logo-mandiri.png" alt="Mandiri Logo" />
-  </header>
-  <img class="banner" src="assets/banner-asset.png" alt="Banner" />
 
-  <div class="menu-button" onclick="toggleGiftList()">🎁 Daftar Hadiah</div>
-  <div class="gift-list" id="giftList">
-    <ul>
-      <li>+3 M-Gacha Poin</li>
-      <li>i-Voucher Indomaret Rp 50.000</li>
-      <li>i-Voucher Indomaret Rp 100.000</li>
-      <li>Voucher Alfamart Rp 50.000</li>
-      <li>Voucher Alfamart Rp 100.000</li>
-      <li>Voucher Grab Rp 50.000</li>
-      <li>Iphone 15 128GB</li>
-      <li>Samsung Smart TV 32"</li>
-      <li>Honda Vario 125 CBS ISS</li>
-      <li>Logam Mulia 1gr</li>
-    </ul>
+  <img src="assets/logo-mandiri.png" class="logo" alt="Logo Mandiri" />
+  
+  <h1>🎁 Pilih Hadiahmu!</h1>
+
+  <div class="counter" id="spinCount">Spin ke-0 dari 10 | Poin: 10</div>
+
+  <div class="gift-boxes">
+    <div class="gift-box" onclick="spinGift(0)"></div>
+    <div class="gift-box" onclick="spinGift(1)"></div>
+    <div class="gift-box" onclick="spinGift(2)"></div>
+    <div class="gift-box" onclick="spinGift(3)"></div>
   </div>
 
-  <h1>🎉 Pilih Hadiahmu Sekarang!</h1>
-  <div class="subtitle">Spin ke-<span id="spinCount">0</span> dari 10</div>
-  <div class="points-display">Poin M-Gacha: <span id="points">5</span></div>
+  <div class="popup" id="popup"></div>
 
-  <div class="box-container">
-    <img src="assets/gift-box.png" onclick="spinBox(1)" />
-    <img src="assets/gift-box.png" onclick="spinBox(2)" />
-    <img src="assets/gift-box.png" onclick="spinBox(3)" />
-    <img src="assets/gift-box.png" onclick="spinBox(4)" />
-  </div>
+  <footer>
+    © 2025 Bank Mandiri - M-Gacha Carnival UI
+  </footer>
 
-  <img class="floating-asset floating-left" src="assets/mascot.png" alt="Mascot" />
-  <img class="floating-asset floating-right" src="assets/carousel-asset.png" alt="Carousel" />
-
-  <div class="prize-display" id="prizePopup">
-    <h2>Selamat!</h2>
-    <div id="prizeText">Kamu mendapatkan hadiah</div>
-    <button onclick="closePrize()">Tutup</button>
-  </div>
-
-  <footer>© 2025 Bank Mandiri - M-Gacha Carnival UI</footer>
-
-  <audio id="arcadeSound" src="assets/arcade-sound.mp3"></audio>
+  <audio id="spinSound" src="assets/arcade-sound.mp3"></audio>
 
   <script>
-    const giftList = [
+    const hadiahList = [
       "+3 M-Gacha Poin",
       "i-Voucher Indomaret Rp 50.000",
       "i-Voucher Indomaret Rp 100.000",
@@ -180,64 +129,53 @@
       "Voucher Alfamart Rp 100.000",
       "Voucher Grab Rp 50.000",
       "Iphone 15 128GB",
-      "Samsung Smart TV 32\"",
+      "Samsung Smart TV 32”",
       "Honda Vario 125 CBS ISS",
       "Logam Mulia 1gr"
     ];
 
-    const prizeProbabilities = [
-      0.55, // +3 M-Gacha Poin
-      0.10, 0.07, // vouchers
-      0.06, 0.05, // vouchers
-      0.04, // Grab
-      0.03, // iPhone
-      0.025, // TV
-      0.01, // Motor
-      0.005 // Emas
-    ];
+    let spinCount = 0;
+    let mGachaPoin = 10;
 
-    let spins = 0;
-    let points = 5;
-
-    function spinBox(boxIndex) {
-      if (spins >= 10) {
-        alert("Kamu telah mencapai batas 10 spin hari ini. Silakan coba lagi besok.");
-        return;
-      }
-      if (points < 2) {
-        alert("Poin M-Gacha tidak cukup. Kamu butuh minimal 2 poin untuk spin.");
+    function spinGift(boxIndex) {
+      if (spinCount >= 10) {
+        showPopup("Kamu telah mencapai batas 10 spin hari ini. Silakan coba lagi besok.");
         return;
       }
 
-      points -= 2;
-      spins++;
-      document.getElementById("points").innerText = points;
-      document.getElementById("spinCount").innerText = spins;
-
-      const prize = getRandomPrize();
-      document.getElementById("prizeText").innerText = `Kamu mendapatkan: ${prize}`;
-      document.getElementById("prizePopup").style.display = "block";
-      document.getElementById("arcadeSound").play();
-    }
-
-    function getRandomPrize() {
-      let r = Math.random();
-      let sum = 0;
-      for (let i = 0; i < prizeProbabilities.length; i++) {
-        sum += prizeProbabilities[i];
-        if (r <= sum) return giftList[i];
+      if (mGachaPoin < 2) {
+        showPopup("Poin M-Gacha kamu tidak cukup. Minimum 2 poin untuk spin.");
+        return;
       }
-      return giftList[0];
+
+      // Probabilitas tinggi untuk poin
+      const random = Math.random();
+      let hadiah;
+      if (random < 0.5) {
+        hadiah = hadiahList[0]; // +3 Poin
+        mGachaPoin += 1; // Karena -2 +3 = +1
+      } else {
+        hadiah = hadiahList[Math.floor(Math.random() * (hadiahList.length - 1)) + 1];
+        mGachaPoin -= 2;
+      }
+
+      spinCount++;
+      document.getElementById('spinCount').innerText = `Spin ke-${spinCount} dari 10 | Poin: ${mGachaPoin}`;
+      showPopup(`🎉 Selamat! Kamu mendapatkan: <b>${hadiah}</b>`);
+
+      // Play sound
+      document.getElementById("spinSound").play();
     }
 
-    function closePrize() {
-      document.getElementById("prizePopup").style.display = "none";
-    }
-
-    function toggleGiftList() {
-      const el = document.getElementById("giftList");
-      el.style.display = el.style.display === "block" ? "none" : "block";
+    function showPopup(message) {
+      const popup = document.getElementById("popup");
+      popup.innerHTML = message;
+      popup.classList.add("show");
+      setTimeout(() => {
+        popup.classList.remove("show");
+      }, 3000);
     }
   </script>
+
 </body>
 </html>
