@@ -52,22 +52,23 @@
       font-size: 14px;
       margin-bottom: 20px;
     }
+      .gift-container {
+    display: grid;
+    grid-template-columns: repeat(2, 120px);
+    grid-template-rows: repeat(2, 120px);
+    gap: 24px 24px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
 
-    .gift-container {
-      display: grid;
-      grid-template-columns: repeat(2, auto);
-      gap: 24px 32px;
-      justify-content: center;
-      margin-top: 10px;
-      flex-grow: 1;
-    }
-
-    .gift-box {
-      width: 90px;
-      height: 90px;
-      background: url("assets/gift-box.png") no-repeat center center;
-      background-size: contain;
-      cursor: pointer;
+  .gift-box {
+    width: 120px;
+    height: 120px;
+    background: url("assets/gift-box.png") no-repeat center center;
+    background-size: contain;
+    cursor: pointer;
+  }
     }
 
     .popup {
