@@ -76,6 +76,10 @@
       animation: shake 0.5s infinite;
     }
 
+    .gift-box:active {
+      animation: bounce 0.3s ease;
+    }
+
     .gift-box span {
       cursor: pointer;
     }
@@ -96,6 +100,12 @@
       60% { transform: translate(3px, 2px) rotate(0deg); }
       80% { transform: translate(1px, -1px) rotate(1deg); }
       100% { transform: translate(-1px, 2px) rotate(-1deg); }
+    }
+
+    @keyframes bounce {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
 
     .popup {
@@ -184,25 +194,27 @@
   </style>
 </head>
 <body>
-  <canvas id="confetti-canvas"></canvas>
-  <img src="assets/logo-mandiri.png" alt="Mandiri Logo" class="logo" />
-  
-  <div class="menu">
-    <button onclick="showGiftList()">🎁 Daftar Hadiah</button>
-    <button onclick="showHistory()">📦 HadiahMu</button>
+<canvas id="confetti-canvas"></canvas>
+<img src="assets/logo-mandiri.png" alt="Mandiri Logo" class="logo" />
+
+<div class="menu">
+  <button onclick="showGiftList()">🎁 Daftar Hadiah</button>
+  <button onclick="showHistory()">📦 HadiahMu</button>
+</div>
+
+<div class="info">
+  <div class="coin-display">
+    😊 <span>M-Gacha Poin: <span id="points">10</span></span>
   </div>
+  <div id="chances">Kesempatan Hari ini: 10x</div>
+  <div class="sub-info">Tukarkan 2 poin untuk 1x kesempatan</div>
+</div>
 
-  <div class="info">
-    <div class="coin-display">
-      😊 <span>M-Gacha Poin: <span id="points">10</span></span>
-    </div>
-    <div id="chances">Kesempatan Hari ini: 10x</div>
-    <div class="sub-info">Tukarkan 2 poin untuk 1x kesempatan</div>
-  </div>
+<div class="gift-container" id="gift-container"></div>
 
-  <div class="gift-container" id="gift-container"></div>
-
-  <div class="popup" id="rewardPopup"></div>
+<div class="popup" id="rewardPopup"></div>
+<audio id="popSound" src="assets/pop.mp3"></audio>
+<audio id="rewardSound" src="assets/big-reward.mp3"></audio>
 <script>
   let points = 10;
   let chances = 10;
@@ -222,6 +234,8 @@
 
   const rewardPopup = document.getElementById("rewardPopup");
   const history = [];
+  const popSound = document.getElementById("popSound");
+  const rewardSound = document.getElementById("rewardSound");
 
   function updateDisplay() {
     document.getElementById("points").textContent = points;
@@ -261,8 +275,10 @@
       showRewardPopup("Kamu kehabisan kesempatan atau poin.", false);
       return;
     }
+
     points -= 2;
     chances--;
+    popSound.play();
 
     const reward = pickReward();
     if (reward.includes('+3')) points += 3;
@@ -271,6 +287,12 @@
     updateDisplay();
     showRewardPopup(reward, true);
     sendToGoogleSheets(reward);
+
+    // Play reward sound if hadiah besar
+    const isBig = !reward.includes('+3');
+    if (isBig) {
+      setTimeout(() => rewardSound.play(), 300);
+    }
   }
 
   function showRewardPopup(message, isReward = true) {
@@ -322,7 +344,7 @@
   updateDisplay();
 </script>
 <script>
-// 🎊 Confetti Engine JS (tanpa library eksternal)
+// 🎊 Confetti Engine JS
 const canvas = document.getElementById("confetti-canvas");
 const ctx = canvas.getContext("2d");
 let confetti = [];
@@ -354,7 +376,7 @@ function startConfetti() {
 
 function renderConfetti() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  confetti.forEach((c, i) => {
+  confetti.forEach((c) => {
     ctx.beginPath();
     ctx.lineWidth = c.r;
     ctx.strokeStyle = c.color;
