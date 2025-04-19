@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gacha Mandiri - Box Carnival</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Nunito', sans-serif;
+      background: radial-gradient(circle at top, #89CFF0 0%, #4682B4 100%);
+      color: #002c5f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      min-height: 100vh;
+      background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+    }
+    header img {
+      width: 180px;
+      margin-bottom: 10px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+    .box-container {
+      display: grid;
+      grid-template-columns: repeat(2, 140px);
+      gap: 20px;
+      margin: 30px 0;
+    }
+    .gift-box {
+      background: url('https://cdn-icons-png.flaticon.com/512/3468/3468371.png') no-repeat center/contain;
+      width: 140px;
+      height: 140px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .gift-box:hover {
+      transform: scale(1.1);
+    }
+    #spin-count {
+      margin-bottom: 20px;
+      font-size: 1rem;
+    }
+    .popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      display: none;
+    }
+    .popup-content {
+      background: white;
+      color: #002c5f;
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      width: 80%;
+      max-width: 350px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    }
+    .popup-content h2 {
+      margin-bottom: 10px;
+    }
+    footer {
+      margin-top: auto;
+      text-align: center;
+      font-size: 0.8rem;
+      color: white;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="./assets/logo-mandiri.png" alt="Logo Mandiri">
+    <h1>🎉 Pilih Hadiahmu Sekarang!</h1>
+  </header>
+
+  <div id="spin-count">Spin ke-0 dari 10</div>
+  <div class="box-container">
+    <div class="gift-box" onclick="openBox()"></div>
+    <div class="gift-box" onclick="openBox()"></div>
+    <div class="gift-box" onclick="openBox()"></div>
+    <div class="gift-box" onclick="openBox()"></div>
+  </div>
+
+  <div class="popup" id="popup">
+    <div class="popup-content">
+      <h2>🎁 Hadiahmu:</h2>
+      <p id="popup-message"></p>
+      <button onclick="closePopup()">OK</button>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 Bank Mandiri • Carnival Gacha UI<br>
+    Pajak hadiah ditanggung Mandiri. Ilustrasi tidak mengikat.
+  </footer>
+
+  <script>
+    const prizes = ["+3 Poin Gebyar", "i-Voucher Indomaret Rp 50.000", "i-Voucher Indomaret Rp 100.000", "Voucher Alfamart Rp 50.000", "Voucher Alfamart Rp 100.000", "Voucher Grab Rp 50.000", "iPhone 15 128GB", "Samsung Smart TV 32 Inch", "Honda Vario 125 CBS ISS", "Logam Mulia 1gr"];
+    const weights = [85, 3, 2, 2, 2, 2, 1, 1, 1, 1];
+    let spins = 0;
+
+    function openBox() {
+      if (spins >= 10) {
+        showPopup("Kamu sudah mencapai batas harian. Coba lagi besok!");
+        return;
+      }
+      spins++;
+      document.getElementById('spin-count').innerText = "Spin ke-" + spins + " dari 10";
+      const prize = pickPrize();
+      showPopup(prize);
+    }
+
+    function pickPrize() {
+      let total = weights.reduce((a, b) => a + b, 0);
+      let rand = Math.random() * total;
+      for (let i = 0; i < weights.length; i++) {
+        if (rand < weights[i]) return prizes[i];
+        rand -= weights[i];
+      }
+    }
+
+    function showPopup(message) {
+      document.getElementById('popup-message').innerText = message;
+      document.getElementById('popup').style.display = 'flex';
+    }
+
+    function closePopup() {
+      document.getElementById('popup').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
