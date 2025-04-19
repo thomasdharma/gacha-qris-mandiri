@@ -7,251 +7,197 @@
   <style>
     body {
       margin: 0;
-      font-family: 'Arial', sans-serif;
-      background: url('assets/background.png') no-repeat center center fixed;
+      background: url('background.png') no-repeat center center fixed;
       background-size: cover;
-      overflow-x: hidden;
-    }
-    .logo {
-      margin-top: 20px;
-      width: 150px;
-    }
-    .top-bar {
-      text-align: center;
-      margin-top: 20px;
-    }
-    .info-bar {
-      text-align: center;
+      font-family: 'Arial', sans-serif;
       color: white;
-      font-size: 20px;
-      margin: 10px 0;
+      text-align: center;
     }
-    .info-bar small {
-      display: block;
-      font-size: 14px;
-      margin-top: 4px;
-      color: #ddd;
-    }
-    .coin {
-      width: 20px;
-      vertical-align: middle;
-      margin-right: 6px;
-    }
+    .logo { width: 150px; margin: 10px auto; display: block; }
+    .info { font-size: 1.2em; margin: 5px; }
+    .coin { width: 20px; vertical-align: middle; margin-right: 5px; }
     .gift-container {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 30px;
-      max-width: 300px;
-      margin: 40px auto 60px;
+      gap: 20px;
+      max-width: 400px;
+      margin: 20px auto;
     }
     .gift-box {
       width: 120px;
-      height: 120px;
-      background-image: url('assets/gift-box.png');
-      background-size: cover;
       cursor: pointer;
-      position: relative;
+      transition: transform 0.2s;
     }
+    .gift-box:hover { transform: scale(1.1); }
+    .button {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: white;
+      color: black;
+      padding: 8px 15px;
+      border-radius: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .button.history { top: 50px; }
+    .modal, .overlay {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+    }
+    .overlay {
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+    }
+    .modal {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      color: black;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 90%;
+      text-align: left;
+    }
+    .modal.show, .overlay.show { display: block; }
     .reward-popup {
       position: fixed;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%) scale(0.9);
-      background: white;
-      border-radius: 20px;
+      transform: translate(-50%,-50%);
+      background: #fff;
+      color: #000;
       padding: 30px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-      text-align: center;
-      z-index: 100;
-      display: none;
-      animation: popup 0.3s ease forwards;
-    }
-    .reward-popup h2 {
-      margin: 0 0 15px;
-      color: #333;
-    }
-    .reward-popup button {
-      margin-top: 15px;
-      background: #fcb800;
-      border: none;
-      padding: 10px 20px;
-      font-weight: bold;
       border-radius: 10px;
-      cursor: pointer;
-    }
-    @keyframes popup {
-      from {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(0.7);
-      }
-      to {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-      }
-    }
-    .overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 99;
+      font-size: 20px;
       display: none;
+      z-index: 9999;
     }
   </style>
 </head>
-  <body>
-  <div class="top-bar">
-    <img src="assets/logo-mandiri.png" class="logo" alt="Mandiri Logo">
+<body>
+
+  <img src="logo-mandiri.png" class="logo" />
+  <div class="info"><img src="coin.png" class="coin" /> <span id="points">M-Gacha Poin: 10</span></div>
+  <div class="info">Kesempatan Hari ini: <span id="chances">10x</span></div>
+  <div class="info">Tukarkan 2 poin untuk 1x kesempatan</div>
+
+  <div class="gift-container" id="giftContainer"></div>
+
+  <div class="button" onclick="showModal('list')">📜 Daftar Hadiah</div>
+  <div class="button history" onclick="showModal('history')">🎁 HadiahMu</div>
+
+  <div class="overlay" id="overlay" onclick="hideModal()"></div>
+
+  <div class="modal" id="modal-list">
+    <h3>📜 Daftar Hadiah</h3>
+    <ul>
+      <li>+3 M-Gacha Poin</li>
+      <li>i-Voucher Indomaret Rp 50.000</li>
+      <li>i-Voucher Indomaret Rp 100.000</li>
+      <li>Voucher Alfamart Rp 50.000</li>
+      <li>Voucher Alfamart Rp 100.000</li>
+      <li>Voucher Grab Rp 50.000</li>
+      <li>Iphone 15 128GB</li>
+      <li>Samsung Smart TV 32"</li>
+      <li>Honda Vario 125 CBS ISS</li>
+      <li>Logam Mulia 1gr</li>
+    </ul>
   </div>
 
-  <div class="info-bar">
-    <span><img src="assets/coin.png" class="coin"> <b>M-Gacha Poin:</b> <span id="point">10</span></span><br>
-    <span><b>Kesempatan Hari ini:</b> <span id="chance">10</span>x</span>
-    <small>🎫 Tukarkan 2 poin untuk 1x kesempatan</small>
+  <div class="modal" id="modal-history">
+    <h3>🎁 HadiahMu</h3>
+    <ul id="historyList"></ul>
   </div>
 
-  <div class="gift-container" id="giftContainer">
-    <!-- Gift Boxes will be inserted here -->
-  </div>
+  <div class="reward-popup" id="rewardPopup"></div>
 
-  <!-- Custom Reward Popup -->
-  <div class="overlay" id="overlay"></div>
-  <div class="reward-popup" id="rewardPopup">
-    <h2 id="rewardText">🎁 Kamu mendapatkan...</h2>
-    <button onclick="closePopup()">Main Lagi</button>
-  </div>
-
-  <audio id="spinSound" src="assets/arcade-sound.mp3" preload="auto"></audio>
+  <audio id="sound" src="arcade-sound.mp3" preload="auto"></audio>
 
   <script>
-    const giftContainer = document.getElementById('giftContainer');
-    const pointEl = document.getElementById('point');
-    const chanceEl = document.getElementById('chance');
-    const spinSound = document.getElementById('spinSound');
-    const rewardPopup = document.getElementById('rewardPopup');
-    const rewardText = document.getElementById('rewardText');
-    const overlay = document.getElementById('overlay');
+    const rewards = [
+      ...Array(98).fill("+3 M-Gacha Poin"),
+      ...Array(1).fill("i-Voucher Indomaret Rp 50.000"),
+      ...Array(1).fill("Voucher Grab Rp 50.000"),
+      "Samsung Smart TV 32\"",
+      "Honda Vario 125 CBS ISS",
+      "Logam Mulia 1gr"
+    ];
 
     let points = 10;
     let chances = 10;
+    let history = [];
 
-    const prizeList = [
-      { name: '+3 M-Gacha Poin', prob: 98 },
-      { name: 'Voucher Indomaret 50K', prob: 0.5 },
-      { name: 'Voucher Indomaret 100K', prob: 0.2 },
-      { name: 'Voucher Alfamart 50K', prob: 0.5 },
-      { name: 'Voucher Alfamart 100K', prob: 0.2 },
-      { name: 'Voucher Grab 50K', prob: 0.3 },
-      { name: 'iPhone 15', prob: 0.1 },
-      { name: 'Smart TV 32"', prob: 0.1 },
-      { name: 'Honda Vario 125 CBS ISS', prob: 0.05 },
-      { name: 'Logam Mulia 1gr', prob: 0.05 }
-    ];
+    const pointsDisplay = document.getElementById("points");
+    const chancesDisplay = document.getElementById("chances");
+    const giftContainer = document.getElementById("giftContainer");
+    const rewardPopup = document.getElementById("rewardPopup");
+    const sound = document.getElementById("sound");
 
-    function getWeightedPrize() {
-      const total = prizeList.reduce((sum, p) => sum + p.prob, 0);
-      let rand = Math.random() * total;
-      for (const prize of prizeList) {
-        if (rand < prize.prob) return prize.name;
-        rand -= prize.prob;
+    function updateDisplay() {
+      pointsDisplay.innerHTML = `M-Gacha Poin: ${points}`;
+      chancesDisplay.innerHTML = `${chances}x`;
+    }
+
+    function showModal(type) {
+      document.getElementById("overlay").classList.add("show");
+      document.getElementById("modal-" + type).classList.add("show");
+      if (type === 'history') {
+        const historyList = document.getElementById("historyList");
+        historyList.innerHTML = history.map(item => `<li>${item}</li>`).join("");
       }
-      return '+3 M-Gacha Poin'; // fallback
     }
 
-    function showPopup(reward) {
-      rewardText.innerText = `🎁 Kamu mendapatkan:\n${reward}`;
-      rewardPopup.style.display = 'block';
-      overlay.style.display = 'block';
-    }
-
-    function closePopup() {
-      rewardPopup.style.display = 'none';
-      overlay.style.display = 'none';
+    function hideModal() {
+      document.getElementById("overlay").classList.remove("show");
+      document.querySelectorAll(".modal").forEach(m => m.classList.remove("show"));
     }
 
     function createGiftBox(index) {
-      const box = document.createElement('div');
-      box.className = 'gift-box';
+      const img = document.createElement("img");
+      img.src = "gift-box.png";
+      img.className = "gift-box";
+      img.onclick = () => openBox(index);
+      return img;
+    }
 
-      box.addEventListener('click', () => {
-        if (points < 2 || chances <= 0) return;
+    function openBox(index) {
+      if (chances <= 0 || points < 2) {
+        alert("Kamu kehabisan kesempatan atau poin.");
+        return;
+      }
 
-        points -= 2;
-        chances -= 1;
-        pointEl.textContent = points;
-        chanceEl.textContent = chances;
+      sound.play();
+      chances--;
+      points -= 2;
+      const reward = rewards[Math.floor(Math.random() * rewards.length)];
+      history.push(reward);
 
-        spinSound.currentTime = 0;
-        spinSound.play();
+      updateDisplay();
+      showRewardPopup(reward);
+    }
 
-        const prize = getWeightedPrize();
-        if (prize === '+3 M-Gacha Poin') points += 3;
+    function showRewardPopup(reward) {
+      rewardPopup.innerHTML = `<div>🎉 Kamu mendapat: <b>${reward}</b></div><br><button onclick="closeRewardPopup()">Main Lagi</button>`;
+      rewardPopup.style.display = "block";
+    }
 
-        pointEl.textContent = points;
-        showPopup(prize);
-      });
-
-      return box;
+    function closeRewardPopup() {
+      rewardPopup.style.display = "none";
     }
 
     function renderGifts() {
-      giftContainer.innerHTML = '';
+      giftContainer.innerHTML = "";
       for (let i = 0; i < 4; i++) {
         giftContainer.appendChild(createGiftBox(i));
       }
     }
 
     renderGifts();
+    updateDisplay();
   </script>
-    const rewardHistory = [];
-
-function togglePopup(type) {
-  const popup = document.getElementById(`popup-${type}`);
-  const display = popup.style.display === "block" ? "none" : "block";
-  popup.style.display = display;
-  overlay.style.display = display;
-  if (type === 'riwayat') {
-    const list = document.getElementById('riwayat-list');
-    list.innerHTML = rewardHistory.length === 0 ? '<li><i>Belum ada hadiah</i></li>' :
-      rewardHistory.map(h => `<li>${h}</li>`).join('');
-  }
-}
-
-function showPopup(reward) {
-  rewardText.innerText = `🎁 Kamu mendapatkan:\n${reward}`;
-  rewardPopup.style.display = 'block';
-  overlay.style.display = 'block';
-  rewardHistory.push(reward);
-}
-    <!-- Menu Tombol Pop-up -->
-<div class="menu-buttons" style="position: fixed; top: 20px; right: 20px; z-index: 100;">
-  <button onclick="togglePopup('daftar')" style="margin:5px;">📜 Daftar Hadiah</button>
-  <button onclick="togglePopup('riwayat')" style="margin:5px;">🎁 HadiahMu</button>
-</div>
-
-<!-- Pop-up Daftar Hadiah -->
-<div class="reward-popup" id="popup-daftar" style="display:none;">
-  <h2>📜 Daftar Hadiah</h2>
-  <ul style="text-align:left;">
-    <li>+3 M-Gacha Poin</li>
-    <li>i-Voucher Indomaret Rp 50.000</li>
-    <li>i-Voucher Indomaret Rp 100.000</li>
-    <li>Voucher Alfamart Rp 50.000</li>
-    <li>Voucher Alfamart Rp 100.000</li>
-    <li>Voucher Grab Rp 50.000</li>
-    <li>Iphone 15 128GB</li>
-    <li>Samsung Smart TV 32”</li>
-    <li>Honda Vario 125 CBS ISS</li>
-    <li>Logam Mulia 1gr</li>
-  </ul>
-  <button onclick="togglePopup('daftar')">Tutup</button>
-</div>
-
-<!-- Pop-up Riwayat HadiahMu -->
-<div class="reward-popup" id="popup-riwayat" style="display:none;">
-  <h2>🎁 HadiahMu</h2>
-  <ul id="riwayat-list" style="text-align:left;"></ul>
-  <button onclick="togglePopup('riwayat')">Tutup</button>
-</div>
 </body>
 </html>
