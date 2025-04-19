@@ -4,252 +4,188 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>M-Gacha Carnival</title>
+  <link rel="preload" href="assets/arcade-sound.mp3" as="audio">
   <style>
     body {
       margin: 0;
-      font-family: 'Arial Rounded MT Bold', sans-serif;
-      background: url('./assets/background.png') no-repeat center center fixed;
+      font-family: 'Arial', sans-serif;
+      background: url('assets/background.png') no-repeat center center fixed;
       background-size: cover;
-      color: white;
-      text-align: center;
+      overflow-x: hidden;
     }
-
-    #logo {
-      width: 160px;
+    .logo {
+      margin-top: 20px;
+      width: 150px;
+    }
+    .top-bar {
+      text-align: center;
       margin-top: 20px;
     }
-
-    #points {
-      margin-top: 10px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 18px;
-      font-weight: bold;
+    .info-bar {
+      text-align: center;
+      color: white;
+      font-size: 20px;
+      margin: 10px 0;
     }
-
-    #points img {
+    .coin {
       width: 20px;
-      height: 20px;
+      vertical-align: middle;
       margin-right: 6px;
     }
-
-    #chance {
-      margin: 10px auto;
-      font-size: 16px;
-      font-weight: bold;
-    }
-
-    .box-container {
+    .gift-container {
       display: flex;
-      justify-content: center;
-      gap: 20px;
       flex-wrap: wrap;
-      margin: 20px 0;
+      justify-content: center;
+      gap: 30px;
+      margin: 30px 10px 50px;
     }
-
     .gift-box {
-      position: relative;
-      width: 100px;
-      height: 100px;
+      width: 90px;
+      height: 90px;
+      background-image: url('assets/gift-box.png');
+      background-size: cover;
       cursor: pointer;
+      position: relative;
     }
-
-    .box-base {
-      width: 100px;
-      height: 70px;
-      background: url('./assets/gift-box.png') no-repeat center/cover;
+    .reward-text {
       position: absolute;
-      bottom: 0;
-    }
-
-    .box-lid {
-      width: 100px;
-      height: 30px;
-      background: url('./assets/gift-box.png') no-repeat center/cover;
-      position: absolute;
-      top: 0;
-      transform-origin: bottom center;
-      transition: transform 0.4s ease;
-    }
-
-    .gift-box.opened .box-lid {
-      transform: rotateX(100deg);
-    }
-
-    .prize-popup {
-      position: absolute;
-      bottom: 80px;
+      top: 100%;
       left: 50%;
       transform: translateX(-50%);
+      color: white;
+      font-weight: bold;
       font-size: 16px;
-      font-weight: bold;
-      color: #fff;
-      opacity: 0;
-      transition: opacity 0.4s ease, transform 0.4s ease;
+      margin-top: 10px;
+      animation: fadeUp 2s ease-in-out;
     }
-
-    .gift-box.opened .prize-popup {
-      opacity: 1;
-      transform: translateX(-50%) translateY(-20px);
+    @keyframes fadeUp {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, 20px);
+      }
+      50% {
+        opacity: 1;
+        transform: translate(-50%, -10px);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -30px);
+      }
     }
-
-    .menu {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background-color: white;
-      color: black;
-      padding: 8px 15px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 14px;
-    }
-
     .popup {
       position: fixed;
-      top: 20%;
-      left: 50%;
-      transform: translate(-50%, -20%);
-      background-color: white;
-      color: black;
-      padding: 20px;
+      top: 20px;
+      right: 20px;
+      background: white;
+      padding: 10px 16px;
       border-radius: 10px;
-      width: 300px;
+      font-weight: bold;
+      font-size: 16px;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
       display: none;
-      z-index: 99;
     }
-
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: none;
-      z-index: 98;
+    .popup.show {
+      display: block;
+    }
+    .popup::before {
+      content: '🎁 ';
     }
   </style>
 </head>
 <body>
-  <img id="logo" src="./assets/logo-mandiri.png" alt="Logo Mandiri"/>
-  <div id="points"><img src="./assets/coin.png" alt="Coin"/> M-Gacha Poin: <span id="pointValue">10</span></div>
-  <div id="chance">Kesempatan Hari ini: 0x</div>
-  <div class="box-container">
-    <!-- 4 GIFT BOX -->
-    <div class="gift-box" onclick="openBox(this)">
-      <div class="box-lid"></div>
-      <div class="box-base"></div>
-      <div class="prize-popup"></div>
-    </div>
-    <div class="gift-box" onclick="openBox(this)">
-      <div class="box-lid"></div>
-      <div class="box-base"></div>
-      <div class="prize-popup"></div>
-    </div>
-    <div class="gift-box" onclick="openBox(this)">
-      <div class="box-lid"></div>
-      <div class="box-base"></div>
-      <div class="prize-popup"></div>
-    </div>
-    <div class="gift-box" onclick="openBox(this)">
-      <div class="box-lid"></div>
-      <div class="box-base"></div>
-      <div class="prize-popup"></div>
-    </div>
+  <div class="top-bar">
+    <img src="assets/logo-mandiri.png" class="logo" alt="Mandiri Logo">
   </div>
 
-  <!-- MENU HADIAH -->
-  <div class="menu" onclick="togglePopup()">🎁 Daftar Hadiah</div>
-  <div class="popup" id="popup">
-    <h3>🎉 Daftar Hadiah</h3>
-    <ul style="text-align:left;">
-      <li>+3 M-Gacha Poin</li>
-      <li>i-Voucher Indomaret Rp 50.000</li>
-      <li>i-Voucher Indomaret Rp 100.000</li>
-      <li>Voucher Alfamart Rp 50.000</li>
-      <li>Voucher Alfamart Rp 100.000</li>
-      <li>Voucher Grab Rp 50.000</li>
-      <li>Iphone 15 128GB</li>
-      <li>Samsung Smart TV 32”</li>
-      <li>Honda Vario 125 CBS ISS</li>
-      <li>Logam Mulia 1gr</li>
-    </ul>
-    <button onclick="togglePopup()">Tutup</button>
+  <div class="info-bar">
+    <span><img src="assets/coin.png" class="coin"> <b>M-Gacha Poin:</b> <span id="point">10</span></span><br>
+    <span><b>Kesempatan Hari ini:</b> <span id="chance">10</span>x</span>
   </div>
-  <div class="overlay" id="overlay" onclick="togglePopup()"></div>
 
-  <audio id="arcadeSound" src="./assets/arcade-sound.mp3"></audio>
+  <div class="gift-container" id="giftContainer">
+    <!-- 5 Gift Boxes -->
+  </div>
+
+  <div class="popup" id="popup"></div>
+
+  <audio id="spinSound" src="assets/arcade-sound.mp3" preload="auto"></audio>
 
   <script>
-    let spins = 0;
-    let points = 10;
+    const giftContainer = document.getElementById('giftContainer');
+    const popup = document.getElementById('popup');
+    const pointEl = document.getElementById('point');
+    const chanceEl = document.getElementById('chance');
+    const spinSound = document.getElementById('spinSound');
 
-    const prizeList = [
-      { name: '+3 M-Gacha Poin', weight: 98 },
-      { name: 'i-Voucher Indomaret Rp 50.000', weight: 0.5 },
-      { name: 'i-Voucher Indomaret Rp 100.000', weight: 0.5 },
-      { name: 'Voucher Alfamart Rp 50.000', weight: 0.3 },
-      { name: 'Voucher Alfamart Rp 100.000', weight: 0.3 },
-      { name: 'Voucher Grab Rp 50.000', weight: 0.3 },
-      { name: 'iPhone 15 128GB', weight: 0.05 },
-      { name: 'Samsung Smart TV 32"', weight: 0.05 },
-      { name: 'Honda Vario 125 CBS ISS', weight: 0.025 },
-      { name: 'Logam Mulia 1gr', weight: 0.025 }
+    let points = 10;
+    let chances = 10;
+
+    const rewards = [
+      ...Array(98).fill('+3 M-Gacha Poin'),
+      ...Array(1).fill('Voucher Indomaret 50K'),
+      ...Array(1).fill('Voucher Grab 50K'),
+      'iPhone 15',
+      'Smart TV 32"',
+      'Honda Vario',
+      'Logam Mulia 1gr'
     ];
 
-    function getWeightedRandomPrize() {
-      const totalWeight = prizeList.reduce((sum, prize) => sum + prize.weight, 0);
-      let random = Math.random() * totalWeight;
-      for (let prize of prizeList) {
-        if (random < prize.weight) return prize.name;
-        random -= prize.weight;
-      }
+    function getRandomReward() {
+      return rewards[Math.floor(Math.random() * rewards.length)];
     }
 
-    function openBox(boxElement) {
-      if (spins >= 10) {
-        alert("Kamu telah mencapai batas 10 spin hari ini.");
-        return;
-      }
+    function updateInfo() {
+      pointEl.innerText = points;
+      chanceEl.innerText = chances;
+    }
 
-      if (points < 2) {
-        alert("Poin kamu tidak cukup. Diperlukan 2 M-Gacha Poin.");
-        return;
-      }
+    function createGiftBox(index) {
+      const box = document.createElement('div');
+      box.className = 'gift-box';
+      box.dataset.index = index;
 
-      const lid = boxElement.querySelector(".box-lid");
-      const popup = boxElement.querySelector(".prize-popup");
+      box.addEventListener('click', () => {
+        if (points < 2 || chances <= 0) return;
+        
+        points -= 2;
+        chances -= 1;
+        updateInfo();
+        spinSound.currentTime = 0;
+        spinSound.play();
 
-      boxElement.classList.add("opened");
-      document.getElementById("arcadeSound").play();
+        // clear any previous reward texts
+        document.querySelectorAll('.reward-text').forEach(el => el.remove());
 
-      spins++;
-      points -= 2;
+        // animate
+        box.classList.add('open');
 
-      document.getElementById("chance").textContent = `Kesempatan Hari ini: ${spins}x`;
-      document.getElementById("pointValue").textContent = points;
+        const reward = getRandomReward();
 
-      const prize = getWeightedRandomPrize();
-      popup.textContent = `🎉 ${prize}`;
+        if (reward === '+3 M-Gacha Poin') points += 3;
 
-      if (prize === '+3 M-Gacha Poin') {
-        points += 3;
+        const rewardText = document.createElement('div');
+        rewardText.className = 'reward-text';
+        rewardText.innerText = reward;
+        box.appendChild(rewardText);
+
         setTimeout(() => {
-          document.getElementById("pointValue").textContent = points;
-        }, 1000);
+          rewardText.remove();
+        }, 2500);
+      });
+
+      return box;
+    }
+
+    function renderGifts() {
+      giftContainer.innerHTML = '';
+      for (let i = 0; i < 5; i++) {
+        giftContainer.appendChild(createGiftBox(i));
       }
     }
 
-    function togglePopup() {
-      const popup = document.getElementById("popup");
-      const overlay = document.getElementById("overlay");
-      const show = popup.style.display === "block" ? "none" : "block";
-      popup.style.display = show;
-      overlay.style.display = show;
-    }
+    renderGifts();
+    updateInfo();
   </script>
 </body>
 </html>
