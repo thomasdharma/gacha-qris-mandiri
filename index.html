@@ -1,174 +1,243 @@
 <!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>M-Gacha Carnival Mandiri</title>
-    <link rel="icon" href="/assets/logo-mandiri.png" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      body {
-        font-family: 'Inter', sans-serif;
-        background: url('assets/background.png') no-repeat center center fixed;
-        background-size: cover;
-        text-align: center;
-        color: white;
-      }
-      .logo {
-        width: 140px;
-        margin: 30px auto 10px;
-      }
-      .banner {
-        width: 200px;
-        margin: 10px auto;
-        display: block;
-      }
-      .title {
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin-top: 10px;
-        margin-bottom: 5px;
-      }
-      .subtitle {
-        font-size: 0.9rem;
-        margin-bottom: 20px;
-      }
-      .boxes {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        margin-bottom: 30px;
-      }
-      .box {
-        width: 70px;
-        cursor: pointer;
-        transition: transform 0.2s;
-      }
-      .box:hover {
-        transform: scale(1.1);
-      }
-      footer {
-        font-size: 0.8rem;
-        margin-bottom: 30px;
-        color: #fff;
-      }
-      .mascot, .carousel {
-        position: fixed;
-        width: 100px;
-        bottom: 10px;
-      }
-      .mascot {
-        left: 10px;
-      }
-      .carousel {
-        right: 10px;
-      }
-      #gift-list {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: white;
-        color: black;
-        padding: 15px;
-        border-radius: 12px;
-        font-size: 0.9rem;
-        text-align: left;
-        max-width: 230px;
-        display: none;
-        z-index: 20;
-      }
-      .gift-button {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: white;
-        color: black;
-        padding: 10px 15px;
-        border-radius: 20px;
-        font-weight: bold;
-        font-size: 0.8rem;
-        cursor: pointer;
-        z-index: 21;
-      }
-    </style>
-  </head>
-  <body>
-    <img src="assets/logo-mandiri.png" alt="logo mandiri" class="logo" />
-    <img src="assets/banner-asset.png" alt="banner" class="banner" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>M-Gacha Carnival UI</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    body {
+      background: url('assets/background.png') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      text-align: center;
+      overflow-x: hidden;
+    }
+    header img {
+      width: 150px;
+      margin: 1rem auto 0;
+    }
+    .banner {
+      margin: 0.5rem auto 1rem;
+      height: 60px;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.25rem;
+    }
+    .subtitle {
+      font-size: 0.9rem;
+      margin-bottom: 1.2rem;
+    }
+    .spin-count {
+      margin-bottom: 1.2rem;
+      font-size: 1rem;
+    }
+    .points-display {
+      margin-bottom: 0.8rem;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+    .box-container {
+      display: flex;
+      justify-content: center;
+      gap: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+    .box-container img {
+      width: 80px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .box-container img:hover {
+      transform: scale(1.1);
+    }
+    .floating-asset {
+      position: fixed;
+      width: 100px;
+    }
+    .floating-left {
+      bottom: 1.5rem;
+      left: 1rem;
+    }
+    .floating-right {
+      bottom: 1.5rem;
+      right: 1rem;
+    }
+    .prize-display {
+      background: rgba(255, 255, 255, 0.9);
+      color: #222;
+      padding: 1rem 1.2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 10px #0005;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 999;
+      display: none;
+    }
+    .prize-display h2 {
+      margin-bottom: 0.6rem;
+    }
+    .prize-display button {
+      margin-top: 0.6rem;
+      padding: 0.5rem 1rem;
+      background: #fdb813;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    footer {
+      font-size: 0.8rem;
+      margin-top: 1rem;
+      padding-bottom: 1rem;
+    }
+    .menu-button {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.5rem 1rem;
+      background: #fff;
+      color: #222;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .gift-list {
+      display: none;
+      position: fixed;
+      right: 1rem;
+      top: 3.2rem;
+      background: #fff;
+      color: #000;
+      padding: 1rem;
+      border-radius: 1rem;
+      font-size: 0.8rem;
+      box-shadow: 0 0 12px #0005;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="assets/logo-mandiri.png" alt="Mandiri Logo" />
+  </header>
+  <img class="banner" src="assets/banner-asset.png" alt="Banner" />
 
-    <div class="title">🎉 Pilih Hadiahmu Sekarang!</div>
-    <div class="subtitle" id="spin-counter">Spin ke-0 dari 10</div>
+  <div class="menu-button" onclick="toggleGiftList()">🎁 Daftar Hadiah</div>
+  <div class="gift-list" id="giftList">
+    <ul>
+      <li>+3 M-Gacha Poin</li>
+      <li>i-Voucher Indomaret Rp 50.000</li>
+      <li>i-Voucher Indomaret Rp 100.000</li>
+      <li>Voucher Alfamart Rp 50.000</li>
+      <li>Voucher Alfamart Rp 100.000</li>
+      <li>Voucher Grab Rp 50.000</li>
+      <li>Iphone 15 128GB</li>
+      <li>Samsung Smart TV 32"</li>
+      <li>Honda Vario 125 CBS ISS</li>
+      <li>Logam Mulia 1gr</li>
+    </ul>
+  </div>
 
-    <div class="boxes">
-      <img src="assets/gift-box.png" class="box" onclick="openBox(1)" />
-      <img src="assets/gift-box.png" class="box" onclick="openBox(2)" />
-      <img src="assets/gift-box.png" class="box" onclick="openBox(3)" />
-      <img src="assets/gift-box.png" class="box" onclick="openBox(4)" />
-    </div>
+  <h1>🎉 Pilih Hadiahmu Sekarang!</h1>
+  <div class="subtitle">Spin ke-<span id="spinCount">0</span> dari 10</div>
+  <div class="points-display">Poin M-Gacha: <span id="points">5</span></div>
 
-    <footer>© 2025 Bank Mandiri - M-Gacha Carnival UI</footer>
+  <div class="box-container">
+    <img src="assets/gift-box.png" onclick="spinBox(1)" />
+    <img src="assets/gift-box.png" onclick="spinBox(2)" />
+    <img src="assets/gift-box.png" onclick="spinBox(3)" />
+    <img src="assets/gift-box.png" onclick="spinBox(4)" />
+  </div>
 
-    <img src="assets/mascot.png" class="mascot" />
-    <img src="assets/carousel-asset.png" class="carousel" />
+  <img class="floating-asset floating-left" src="assets/mascot.png" alt="Mascot" />
+  <img class="floating-asset floating-right" src="assets/carousel-asset.png" alt="Carousel" />
 
-    <div class="gift-button" onclick="toggleGiftList()">🎁 Daftar Hadiah</div>
-    <div id="gift-list">
-      <strong>🎁 Daftar Hadiah:</strong><br />
-      <ul>
-        <li>+3 Poin</li>
-        <li>i-Voucher Indomaret Rp 50.000</li>
-        <li>i-Voucher Indomaret Rp 100.000</li>
-        <li>Voucher Alfamart Rp 50.000</li>
-        <li>Voucher Alfamart Rp 100.000</li>
-        <li>Voucher Grab Rp 50.000</li>
-        <li>Iphone 15 128GB</li>
-        <li>Samsung Smart TV 32"</li>
-        <li>Honda Vario 125 CBS ISS</li>
-        <li>Logam Mulia 1gr</li>
-      </ul>
-    </div>
+  <div class="prize-display" id="prizePopup">
+    <h2>Selamat!</h2>
+    <div id="prizeText">Kamu mendapatkan hadiah</div>
+    <button onclick="closePrize()">Tutup</button>
+  </div>
 
-    <audio id="sound" src="assets/arcade-sound.mp3"></audio>
+  <footer>© 2025 Bank Mandiri - M-Gacha Carnival UI</footer>
 
-    <script>
-      let spinCount = 0;
-      const prizes = [
-        '+3 Poin',
-        'i-Voucher Indomaret Rp 50.000',
-        'i-Voucher Indomaret Rp 100.000',
-        'Voucher Alfamart Rp 50.000',
-        'Voucher Alfamart Rp 100.000',
-        'Voucher Grab Rp 50.000',
-        'Iphone 15 128GB',
-        'Samsung Smart TV 32"',
-        'Honda Vario 125 CBS ISS',
-        'Logam Mulia 1gr'
-      ];
-      function openBox(boxNum) {
-        if (spinCount >= 10) {
-          alert('Kamu telah mencapai batas 10 spin hari ini. Silakan coba lagi besok.');
-          return;
-        }
-        spinCount++;
-        document.getElementById('spin-counter').innerText = `Spin ke-${spinCount} dari 10`;
+  <audio id="arcadeSound" src="assets/arcade-sound.mp3"></audio>
 
-        const sound = document.getElementById('sound');
-        sound.currentTime = 0;
-        sound.play();
+  <script>
+    const giftList = [
+      "+3 M-Gacha Poin",
+      "i-Voucher Indomaret Rp 50.000",
+      "i-Voucher Indomaret Rp 100.000",
+      "Voucher Alfamart Rp 50.000",
+      "Voucher Alfamart Rp 100.000",
+      "Voucher Grab Rp 50.000",
+      "Iphone 15 128GB",
+      "Samsung Smart TV 32\"",
+      "Honda Vario 125 CBS ISS",
+      "Logam Mulia 1gr"
+    ];
 
-        const hadiah = prizes[Math.floor(Math.random() * prizes.length)];
-        alert(`Selamat! Kamu mendapatkan: ${hadiah}`);
+    const prizeProbabilities = [
+      0.55, // +3 M-Gacha Poin
+      0.10, 0.07, // vouchers
+      0.06, 0.05, // vouchers
+      0.04, // Grab
+      0.03, // iPhone
+      0.025, // TV
+      0.01, // Motor
+      0.005 // Emas
+    ];
+
+    let spins = 0;
+    let points = 5;
+
+    function spinBox(boxIndex) {
+      if (spins >= 10) {
+        alert("Kamu telah mencapai batas 10 spin hari ini. Silakan coba lagi besok.");
+        return;
+      }
+      if (points < 2) {
+        alert("Poin M-Gacha tidak cukup. Kamu butuh minimal 2 poin untuk spin.");
+        return;
       }
 
-      function toggleGiftList() {
-        const list = document.getElementById('gift-list');
-        list.style.display = list.style.display === 'block' ? 'none' : 'block';
+      points -= 2;
+      spins++;
+      document.getElementById("points").innerText = points;
+      document.getElementById("spinCount").innerText = spins;
+
+      const prize = getRandomPrize();
+      document.getElementById("prizeText").innerText = `Kamu mendapatkan: ${prize}`;
+      document.getElementById("prizePopup").style.display = "block";
+      document.getElementById("arcadeSound").play();
+    }
+
+    function getRandomPrize() {
+      let r = Math.random();
+      let sum = 0;
+      for (let i = 0; i < prizeProbabilities.length; i++) {
+        sum += prizeProbabilities[i];
+        if (r <= sum) return giftList[i];
       }
-    </script>
-  </body>
+      return giftList[0];
+    }
+
+    function closePrize() {
+      document.getElementById("prizePopup").style.display = "none";
+    }
+
+    function toggleGiftList() {
+      const el = document.getElementById("giftList");
+      el.style.display = el.style.display === "block" ? "none" : "block";
+    }
+  </script>
+</body>
 </html>
