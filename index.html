@@ -177,8 +177,30 @@
       history.push(reward);
 
       updateDisplay();
-      showRewardPopup(reward);
+     showRewardPopup(reward);
+     sendToGoogleSheets(reward);
+
+      
     }
+    function sendToGoogleSheets(reward) {
+  const data = {
+    nama: "Demo Nasabah",
+    cif: "1234567890",
+    norek: "1122334455",
+    hp: "081234567890",
+    email: "demo@example.com",
+    reward: reward
+  };
+
+  fetch("https://script.google.com/macros/s/AKfycbwYHTbpOPV0P3qwu06kgDZA3hnNJABi16ofPkBn48kV9cmo_zV-ieSYtbCzBwkooA1P/exec", {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  });
+}
 
     function showRewardPopup(reward) {
       rewardPopup.innerHTML = `<div>🎉 Kamu mendapat: <b>${reward}</b></div><br><button onclick="closeRewardPopup()">Main Lagi</button>`;
