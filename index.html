@@ -21,6 +21,44 @@
       margin: 10px auto 0;
       display: block;
     }
+    .box-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* Transparan */
+  z-index: 999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.box-animation {
+  font-size: 100px;
+  animation: openBox 2s ease forwards;
+  transform-origin: center;
+}
+
+@keyframes openBox {
+  0% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.3) rotate(20deg);
+  }
+  100% {
+    transform: scale(1) rotate(-10deg);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
     .menu {
       margin-top: 10px;
@@ -467,7 +505,46 @@ function stopConfetti() {
   cancelAnimationFrame(animationFrame);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
+  function openBox(index) {
+  if (points < 2 || chances <= 0) {
+    showRewardPopup("Kamu kehabisan kesempatan atau poin.", false);
+    return;
+  }
+
+  points -= 2;
+  chances--;
+  updateDisplay();
+
+  // Tampilkan overlay animasi
+  const overlay = document.getElementById("boxOverlay");
+  overlay.style.display = "flex";
+
+  // Mainkan suara pop
+  popSound.play();
+
+  // Delay 2 detik untuk efek animasi, lalu lanjut reward
+  setTimeout(() => {
+    const reward = pickReward();
+    if (reward.includes('+3')) points += 3;
+
+    history.push(reward);
+    updateDisplay();
+    showRewardPopup(reward, true);
+    sendToGoogleSheets(reward);
+
+    const isBig = !reward.includes('+3');
+    if (isBig) rewardSound.play();
+
+    overlay.style.display = "none"; // Tutup overlay
+  }, 2000);
+}
 </script>
+  
+  <div id="boxOverlay" class="box-overlay">
+  <div class="box-animation">
+    🎁
+  </div>
+</div>
 
 </body>
 </html>
