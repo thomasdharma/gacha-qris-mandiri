@@ -362,6 +362,9 @@
 
 <audio id="popSound" src="assets/pop.mp3"></audio>
 <audio id="rewardSound" src="assets/big-reward.mp3"></audio>
+<audio id="fireworkSound" src="assets/fireworks.mp3"></audio>
+
+
 
 <script>
   let points = 10;
@@ -434,8 +437,14 @@
       <button onclick="closeRewardPopup()">Main Lagi</button>`;
     rewardPopup.style.display = "block";
     if (isReward) startConfetti();
+     // 🔊 Play suara kemenangan arcade
+    const winSound = document.getElementById("winSound");
+    if (winSound) {
+      winSound.pause();         // pastikan berhenti dulu
+      winSound.currentTime = 0;
+      winSound.play();
   }
-
+}
   function closeRewardPopup() {
     rewardPopup.style.display = "none";
     stopConfetti();
