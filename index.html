@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>M-Gacha Carnival</title>
-  <link rel="icon" href="assets/logo-mandiri.png">
   <style>
     body {
       margin: 0;
@@ -16,14 +15,17 @@
       text-align: center;
       overflow-x: hidden;
     }
+
     .logo {
       width: 140px;
       margin: 10px auto 0;
       display: block;
     }
+
     .menu {
       margin-top: 10px;
     }
+
     .menu button {
       background: white;
       color: black;
@@ -36,15 +38,24 @@
       box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
       cursor: pointer;
     }
+
     .info {
       margin-top: 10px;
       font-size: 18px;
       font-weight: bold;
     }
+
     .sub-info {
       font-size: 14px;
       margin-top: 4px;
     }
+
+    #reset-timer {
+      font-size: 14px;
+      margin-top: 6px;
+      color: #ffd;
+    }
+
     .gift-container {
       margin-top: 30px;
       display: grid;
@@ -53,6 +64,7 @@
       gap: 10px;
       justify-content: center;
     }
+
     .gift-box {
       width: 300px;
       height: 300px;
@@ -65,7 +77,39 @@
       animation: glow 2s ease-in-out infinite alternate;
       transition: transform 0.2s;
     }
-    .gift-box span { cursor: pointer; }
+
+    .gift-box:hover {
+      animation: shake 0.5s infinite;
+    }
+
+    .gift-box:active {
+      animation: bounce 0.3s ease;
+    }
+
+    .gift-box span {
+      cursor: pointer;
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.2); }
+      to   { box-shadow: 0 0 30px 10px rgba(255, 255, 255, 0.8); }
+    }
+
+    @keyframes shake {
+      0% { transform: translate(1px, 1px) rotate(0deg); }
+      20% { transform: translate(-1px, -2px) rotate(-1deg); }
+      40% { transform: translate(-3px, 0px) rotate(1deg); }
+      60% { transform: translate(3px, 2px) rotate(0deg); }
+      80% { transform: translate(1px, -1px) rotate(1deg); }
+      100% { transform: translate(-1px, 2px) rotate(-1deg); }
+    }
+
+    @keyframes bounce {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
     .popup {
       position: fixed;
       top: 50%;
@@ -80,7 +124,14 @@
       font-weight: bold;
       display: none;
       max-width: 80%;
+      animation: explode 0.6s ease-in-out;
     }
+
+    @keyframes explode {
+      0% { transform: scale(0.5) translate(-50%, -50%); opacity: 0; }
+      100% { transform: scale(1) translate(-50%, -50%); opacity: 1; }
+    }
+
     .popup button {
       margin-top: 20px;
       padding: 10px 20px;
@@ -92,16 +143,19 @@
       border-radius: 10px;
       cursor: pointer;
     }
+
     .coin-display {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
     }
+
     .coin-display img {
       width: 20px;
       height: 20px;
     }
+
     #confetti-canvas {
       position: fixed;
       pointer-events: none;
@@ -109,61 +163,45 @@
       left: 0;
       z-index: 998;
     }
-    #rewardList {
-      margin-top: 40px;
-      background-color: rgba(255,255,255,0.2);
-      padding: 20px;
-      border-radius: 12px;
+
+    #termsModal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+    }
+
+    #termsModal .modal-content {
+      background: white;
+      color: black;
+      margin: 10% auto;
+      padding: 30px;
       width: 90%;
       max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
+      border-radius: 12px;
+      text-align: left;
     }
-    .countdown {
-      margin-top: 10px;
-      font-size: 16px;
-      color: #ffd700;
-    }
-    #popup-terms {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8);
-      color: white;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      padding: 40px;
-      box-sizing: border-box;
-    }
-    #popup-terms-content {
-      background: #222;
-      padding: 20px;
-      max-width: 600px;
-      border-radius: 10px;
-      line-height: 1.6;
-    }
-    #popup-terms button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background: #ffd700;
-      color: black;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+
     @media screen and (max-width: 480px) {
+      body { padding: 10px; }
       .gift-container {
-        grid-template-columns: repeat(2, 200px);
-        grid-template-rows: repeat(2, 200px);
-        gap: 10px;
+        grid-template-columns: repeat(2, 220px);
+        grid-template-rows: repeat(2, 220px);
+        gap: 6px;
+        justify-content: center;
       }
       .gift-box {
-        width: 200px;
-        height: 200px;
+        width: 220px;
+        height: 220px;
         font-size: 100px;
+      }
+      .popup {
+        font-size: 20px;
+        padding: 30px 15px;
       }
     }
   </style>
@@ -182,39 +220,24 @@
     😊 <span>M-Gacha Poin: <span id="points">10</span></span>
   </div>
   <div id="chances">Kesempatan Hari ini: 10x</div>
+  <div id="reset-timer">Reset dalam: <span id="countdown"></span></div>
   <div class="sub-info">Tukarkan 2 poin untuk 1x kesempatan</div>
-  <div class="countdown">Reset dalam: <span id="reset-timer">--:--:--</span></div>
 </div>
 
 <div class="gift-container" id="gift-container"></div>
-
 <div class="popup" id="rewardPopup"></div>
 
-<div id="rewardList">
-  <h3>🎁 Daftar Hadiah</h3>
-  <ul style="text-align: left;">
-    <li>+3 M-Gacha Poin</li>
-    <li>i-Voucher Indomaret Rp 50.000</li>
-    <li>Voucher Alfamart Rp 50.000</li>
-    <li>Voucher Grab Rp 50.000</li>
-    <li>i-Voucher Indomaret Rp 100.000</li>
-    <li>Voucher Alfamart Rp 100.000</li>
-    <li>Samsung Smart TV 32"</li>
-    <li>iPhone 15 128GB</li>
-    <li>Honda Vario 125 CBS ISS</li>
-    <li>Logam Mulia 1gr</li>
-  </ul>
-</div>
-
-<div id="popup-terms">
-  <div id="popup-terms-content">
-    <h3>Syarat Mendapatkan Poin:</h3>
-    <ol>
-      <li>Nasabah dengan saldo rata-rata minimum Rp 1 juta akan mendapatkan 10 poin (berlaku kelipatan).</li>
-      <li>Setiap kenaikan saldo rata-rata Rp 500 ribu akan menambah 5 poin tambahan (berlaku kelipatan).</li>
-      <li>Setiap pembayaran melalui QRIS minimal Rp 50.000 akan mendapat 1 poin tambahan.</li>
-      <li>Poin akan ditambahkan setiap awal bulan berikutnya.</li>
-    </ol>
+<div id="termsModal">
+  <div class="modal-content">
+    <h3>Syarat & Ketentuan</h3>
+    <ul>
+      <li>Program ini hanya berlaku untuk nasabah Bank Mandiri yang melakukan transaksi QRIS di merchant tertentu.</li>
+      <li>1x kesempatan bermain membutuhkan 2 M-Gacha Poin.</li>
+      <li>Poin didapatkan dari aktivitas tertentu seperti saldo mengendap, transaksi QRIS, atau kampanye lain dari cabang.</li>
+      <li>Setiap nasabah mendapatkan maksimal 10x kesempatan per hari dan akan di-reset pukul 00:00 WIB.</li>
+      <li>Hadiah ditentukan secara acak oleh sistem dengan probabilitas tertentu.</li>
+      <li>Hadiah tidak dapat diuangkan dan harus ditukar sesuai ketentuan cabang Mandiri penyelenggara.</li>
+    </ul>
     <button onclick="closeTerms()">Saya Mengerti</button>
   </div>
 </div>
@@ -223,132 +246,169 @@
 <audio id="rewardSound" src="assets/big-reward.mp3"></audio>
 
 <script>
-let points = 10;
-let chances = 10;
-let lastReset = new Date();
+  let points = 10;
+  let chances = 10;
+  const rewards = [
+    { label: "+3 M-Gacha Poin", chance: 99.8 },
+    { label: "i-Voucher Indomaret Rp 50.000", chance: 0.06 },
+    { label: "Voucher Alfamart Rp 50.000", chance: 0.05 },
+    { label: "Voucher Grab Rp 50.000", chance: 0.03 },
+    { label: "i-Voucher Indomaret Rp 100.000", chance: 0.02 },
+    { label: "Voucher Alfamart Rp 100.000", chance: 0.015 },
+    { label: "Samsung Smart TV 32\"", chance: 0.005 },
+    { label: "iPhone 15 128GB", chance: 0.004 },
+    { label: "Honda Vario 125 CBS ISS", chance: 0.003 },
+    { label: "Logam Mulia 1gr", chance: 0.002 }
+  ];
 
-const rewards = [
-  { label: "+3 M-Gacha Poin", chance: 99.8 },
-  { label: "i-Voucher Indomaret Rp 50.000", chance: 0.06 },
-  { label: "Voucher Alfamart Rp 50.000", chance: 0.05 },
-  { label: "Voucher Grab Rp 50.000", chance: 0.03 },
-  { label: "i-Voucher Indomaret Rp 100.000", chance: 0.02 },
-  { label: "Voucher Alfamart Rp 100.000", chance: 0.015 },
-  { label: "Samsung Smart TV 32\"", chance: 0.005 },
-  { label: "iPhone 15 128GB", chance: 0.004 },
-  { label: "Honda Vario 125 CBS ISS", chance: 0.003 },
-  { label: "Logam Mulia 1gr", chance: 0.002 }
-];
+  const rewardPopup = document.getElementById("rewardPopup");
+  const popSound = document.getElementById("popSound");
+  const rewardSound = document.getElementById("rewardSound");
+  const history = [];
 
-const rewardPopup = document.getElementById("rewardPopup");
-const history = [];
-
-function updateDisplay() {
-  document.getElementById("points").textContent = points;
-  document.getElementById("chances").textContent = `Kesempatan Hari ini: ${chances}x`;
-}
-function pickReward() {
-  let rand = Math.random() * 100;
-  let sum = 0;
-  for (let i = 0; i < rewards.length; i++) {
-    sum += rewards[i].chance;
-    if (rand <= sum) return rewards[i].label;
-  }
-  return rewards[0].label;
-}
-function openBox(index) {
-  if (points < 2 || chances <= 0) {
-    showRewardPopup("Kamu kehabisan kesempatan atau poin.", false);
-    return;
+  function updateDisplay() {
+    document.getElementById("points").textContent = points;
+    document.getElementById("chances").textContent = `Kesempatan Hari ini: ${chances}x`;
   }
 
-  points -= 2;
-  chances--;
-  document.getElementById("popSound").play();
-
-  const reward = pickReward();
-  if (reward.includes('+3')) points += 3;
-
-  history.push(reward);
-  updateDisplay();
-  showRewardPopup(reward, true);
-
-  if (!reward.includes("+3")) {
-    setTimeout(() => document.getElementById("rewardSound").play(), 300);
+  function pickReward() {
+    let rand = Math.random() * 100;
+    let sum = 0;
+    for (let i = 0; i < rewards.length; i++) {
+      sum += rewards[i].chance;
+      if (rand <= sum) return rewards[i].label;
+    }
+    return rewards[0].label;
   }
-}
-function showRewardPopup(message, isReward = true) {
-  rewardPopup.innerHTML = `
-    <div>${isReward ? '🎉 Kamu mendapat:<br><span style="font-size:32px;">' + message + '</span>' : message}</div>
-    <button onclick="closeRewardPopup()">Main Lagi</button>
-  `;
-  rewardPopup.style.display = "block";
-  if (isReward) startConfetti();
-}
-function closeRewardPopup() {
-  rewardPopup.style.display = "none";
-  stopConfetti();
-}
-function showGiftList() {
-  alert("🎁 Daftar Hadiah:\n\n" + rewards.map(r => r.label).join("\n"));
-}
-function showHistory() {
-  alert("📦 Riwayat HadiahMu:\n\n" + (history.join("\n") || "Belum ada hadiah yang diperoleh."));
-}
-function createGiftBox(index) {
-  const box = document.createElement("div");
-  box.className = "gift-box";
-  const icon = document.createElement("span");
-  icon.textContent = "🎁";
-  icon.onclick = () => openBox(index);
-  box.appendChild(icon);
-  return box;
-}
-function renderGifts() {
-  const giftContainer = document.getElementById("gift-container");
-  giftContainer.innerHTML = "";
-  for (let i = 0; i < 4; i++) {
-    giftContainer.appendChild(createGiftBox(i));
+
+  function openBox(index) {
+    if (points < 2 || chances <= 0) {
+      showRewardPopup("Kamu kehabisan kesempatan atau poin.", false);
+      return;
+    }
+
+    points -= 2;
+    chances--;
+    updateDisplay();
+    popSound.play();
+
+    const boxEl = document.querySelectorAll('.gift-box')[index];
+    boxEl.classList.add("shake");
+
+    setTimeout(() => {
+      const reward = pickReward();
+      if (reward.includes("+3")) points += 3;
+      updateDisplay();
+      showRewardPopup(reward, true);
+      sendToGoogleSheets(reward);
+      const isBig = !reward.includes("+3");
+      if (isBig) rewardSound.play();
+      history.push(reward);
+      boxEl.classList.remove("shake");
+    }, 2000);
   }
-}
-function showTerms() {
-  if (!localStorage.getItem("termsAccepted")) {
-    document.getElementById("popup-terms").style.display = "flex";
+
+  function showRewardPopup(message, isReward = true) {
+    rewardPopup.innerHTML = `
+      <div style="font-size: 24px;">
+        ${isReward ? '🎉 Kamu mendapat:<br><span style="font-size:32px;">' + message + '</span>' : message}
+      </div>
+      <button onclick="closeRewardPopup()">Main Lagi</button>`;
+    rewardPopup.style.display = "block";
+    if (isReward) startConfetti();
   }
-}
-function closeTerms() {
-  localStorage.setItem("termsAccepted", "true");
-  document.getElementById("popup-terms").style.display = "none";
-}
-function updateCountdown() {
-  const now = new Date();
-  const nextMidnight = new Date();
-  nextMidnight.setHours(24, 0, 0, 0);
-  const diff = nextMidnight - now;
-  const hrs = String(Math.floor(diff / 1000 / 60 / 60)).padStart(2, "0");
-  const min = String(Math.floor((diff / 1000 / 60) % 60)).padStart(2, "0");
-  const sec = String(Math.floor((diff / 1000) % 60)).padStart(2, "0");
-  document.getElementById("reset-timer").textContent = `${hrs}:${min}:${sec}`;
-  setTimeout(updateCountdown, 1000);
-}
-renderGifts();
-updateDisplay();
-updateCountdown();
-showTerms();
+
+  function closeRewardPopup() {
+    rewardPopup.style.display = "none";
+    stopConfetti();
+  }
+
+  function showGiftList() {
+    alert(`🎁 Daftar Hadiah:\n\n${rewards.map(r => r.label).join('\n')}`);
+  }
+
+  function showHistory() {
+    alert(`📦 Riwayat HadiahMu:\n\n${history.join('\n') || "Belum ada hadiah yang diperoleh."}`);
+  }
+
+  function createGiftBox(index) {
+    const box = document.createElement("div");
+    box.className = "gift-box";
+    const icon = document.createElement("span");
+    icon.textContent = "🎁";
+    icon.onclick = () => openBox(index);
+    box.appendChild(icon);
+    return box;
+  }
+
+  function renderGifts() {
+    const giftContainer = document.getElementById("gift-container");
+    giftContainer.innerHTML = "";
+    for (let i = 0; i < 4; i++) {
+      giftContainer.appendChild(createGiftBox(i));
+    }
+  }
+
+  function sendToGoogleSheets(reward) {
+    fetch('https://script.google.com/macros/s/AKfycbwYHTbpOPV0P3qwu06kgDZA3hnNJABi16ofPkBn48kV9cmo_zV-ieSYtbCzBwkooA1P/exec', {
+      method: 'POST',
+      body: JSON.stringify({
+        timestamp: new Date().toISOString(),
+        nama: "Demo User",
+        cif: "1234567890",
+        norek: "9876543210",
+        hp: "081234567890",
+        email: "demo@example.com",
+        reward: reward
+      }),
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  function closeTerms() {
+    document.getElementById("termsModal").style.display = "none";
+  }
+
+  window.onload = function () {
+    renderGifts();
+    updateDisplay();
+    if (!localStorage.getItem("termsAccepted")) {
+      document.getElementById("termsModal").style.display = "block";
+      localStorage.setItem("termsAccepted", "true");
+    }
+    startCountdown();
+  };
+
+  function startCountdown() {
+    const countdownEl = document.getElementById("countdown");
+    function update() {
+      const now = new Date();
+      const tomorrow = new Date();
+      tomorrow.setHours(24, 0, 0, 0);
+      const diff = Math.max(0, tomorrow - now);
+      const hours = Math.floor(diff / 3600000);
+      const mins = Math.floor((diff % 3600000) / 60000);
+      const secs = Math.floor((diff % 60000) / 1000);
+      countdownEl.textContent = `${hours}j ${mins}m ${secs}d`;
+    }
+    update();
+    setInterval(update, 1000);
+  }
 </script>
-
 <script>
-// Confetti Engine
+// 🎊 Confetti Engine
 const canvas = document.getElementById("confetti-canvas");
 const ctx = canvas.getContext("2d");
 let confetti = [];
 let animationFrame;
+
 function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
+
 function startConfetti() {
   confetti = [];
   for (let i = 0; i < 100; i++) {
@@ -365,6 +425,7 @@ function startConfetti() {
   }
   renderConfetti();
 }
+
 function renderConfetti() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   confetti.forEach((c) => {
@@ -378,6 +439,7 @@ function renderConfetti() {
   updateConfetti();
   animationFrame = requestAnimationFrame(renderConfetti);
 }
+
 function updateConfetti() {
   confetti.forEach((c) => {
     c.tiltAngle += c.tiltAngleIncrement;
@@ -387,10 +449,12 @@ function updateConfetti() {
   });
   confetti = confetti.filter((c) => c.y < canvas.height);
 }
+
 function stopConfetti() {
   cancelAnimationFrame(animationFrame);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 </script>
+
 </body>
 </html>
