@@ -21,6 +21,46 @@
       margin: 10px auto 0;
       display: block;
     }
+    .popup#termsModal {
+  max-width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 30px 20px 20px;
+  text-align: left;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.terms-content {
+  margin-bottom: 20px;
+  color: #222;
+}
+
+.close-x {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  font-weight: bold;
+  color: #222;
+  cursor: pointer;
+}
+
+.agree-btn {
+  display: block;
+  margin: 0 auto;
+  padding: 12px 20px;
+  font-size: 16px;
+  background-color: #005bea;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+    
     .box-overlay {
   position: fixed;
   top: 0;
@@ -264,6 +304,7 @@
 <div class="menu">
   <button onclick="showGiftList()">🎁 Daftar Hadiah</button>
   <button onclick="showHistory()">📦 HadiahMu</button>
+  <button onclick="showTerms()">📜 Syarat & Ketentuan</button>
 </div>
 
 <div class="info">
@@ -278,19 +319,21 @@
 <div class="gift-container" id="gift-container"></div>
 <div class="popup" id="rewardPopup"></div>
 
-<div id="termsModal">
-  <div class="modal-content">
-    <h3>Syarat & Ketentuan</h3>
-    <ul>
-      <li>Program ini hanya berlaku untuk nasabah Bank Mandiri yang melakukan transaksi QRIS di merchant tertentu.</li>
-      <li>1x kesempatan bermain membutuhkan 2 M-Gacha Poin.</li>
-      <li>Poin didapatkan dari aktivitas tertentu seperti saldo mengendap, transaksi QRIS, atau kampanye lain dari cabang.</li>
-      <li>Setiap nasabah mendapatkan maksimal 10x kesempatan per hari dan akan di-reset pukul 00:00 WIB.</li>
-      <li>Hadiah ditentukan secara acak oleh sistem dengan probabilitas tertentu.</li>
-      <li>Hadiah tidak dapat diuangkan dan harus ditukar sesuai ketentuan cabang Mandiri penyelenggara.</li>
-    </ul>
-    <button onclick="closeTerms()">Saya Mengerti</button>
+<div id="termsModal" class="popup">
+  <button class="close-x" onclick="closeTerms()">✖</button>
+  <h2>Syarat & Ketentuan</h2>
+  <div class="terms-content">
+    <p>
+      1. Program M-Gacha Carnival hanya berlaku untuk nasabah yang telah melakukan transaksi QRIS melalui Livin’ by Mandiri.<br><br>
+      2. Setiap transaksi kelipatan tertentu akan dikonversi menjadi M-Gacha Poin yang digunakan untuk bermain.<br><br>
+      3. Dibutuhkan 2 poin untuk 1x kesempatan bermain.<br><br>
+      4. Hadiah akan ditampilkan secara acak berdasarkan probabilitas sistem.<br><br>
+      5. Hadiah utama memiliki peluang sangat kecil dan keputusan hadiah tidak dapat diganggu gugat.<br><br>
+      6. Setiap nasabah hanya dapat bermain maksimal 10x per hari.<br><br>
+      7. Poin dan kesempatan bermain akan direset setiap pukul 00.00 WIB.
+    </p>
   </div>
+  <button onclick="closeTerms()" class="agree-btn">Saya Mengerti</button>
 </div>
 
 <audio id="popSound" src="assets/pop.mp3"></audio>
@@ -504,6 +547,12 @@ function updateConfetti() {
 function stopConfetti() {
   cancelAnimationFrame(animationFrame);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+  function showTerms() {
+  document.getElementById("termsModal").style.display = "block";
+}
+function closeTerms() {
+  document.getElementById("termsModal").style.display = "none";
 }
   function openBox(index) {
   if (points < 2 || chances <= 0) {
